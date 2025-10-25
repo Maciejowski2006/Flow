@@ -1,0 +1,117 @@
+<Window xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:vm="using:Flow.Player.ViewModels"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="using:Flow.Player.Views"
+        xmlns:iconPacks="https://github.com/MahApps/IconPacks.Avalonia"
+        mc:Ignorable="d" Width="620" Height="250"
+        x:Class="Flow.Player.Views.MainWindow"
+        x:DataType="vm:MainWindowViewModel"
+        Icon="/Assets/avalonia-logo.ico"
+        Title="Flow.Player"
+        TransparencyLevelHint="AcrylicBlur"
+        Background="Transparent"
+        CanResize="False"
+        WindowStartupLocation="CenterScreen"
+        ExtendClientAreaToDecorationsHint="True"
+        Focusable="True" PointerWheelChanged="VolumeSliderScroll">
+
+	<Design.DataContext>
+		<vm:MainWindowViewModel />
+	</Design.DataContext>
+	<Panel>
+		<ExperimentalAcrylicBorder IsHitTestVisible="False">
+			<ExperimentalAcrylicBorder.Material>
+				<ExperimentalAcrylicMaterial
+					BackgroundSource="Digger"
+					TintColor="Black"
+					TintOpacity="0.5"
+					MaterialOpacity="0.1" />
+			</ExperimentalAcrylicBorder.Material>
+		</ExperimentalAcrylicBorder>
+		<Grid RowDefinitions="30, *">
+			<Menu VerticalAlignment="Center" PointerPressed="InputElement_OnPointerPressed">
+				<MenuItem Header="_Flow">
+					<MenuItem Header="_Play file" Command="{Binding OpenFileCommand}" />
+					<MenuItem Header="_Open playlist" />
+					<MenuItem Header="_Open folder as playlist" />
+					<Separator />
+					<MenuItem Header="_Exit" />
+				</MenuItem>
+				<MenuItem Header="_Edit">
+					<MenuItem Header="Copy" />
+					<MenuItem Header="Paste" />
+				</MenuItem>
+			</Menu>
+			<Grid Grid.Row="1" Margin="16" ColumnDefinitions="Auto, *" ColumnSpacing="16">
+				<Border CornerRadius="16" ClipToBounds="True">
+					<Panel>
+						<Image IsVisible="{Binding PlayingTrack.DoesHaveCover, FallbackValue=false}" Source="{Binding PlayingTrack.CoverArt}"></Image>
+						<Viewbox VerticalAlignment="Stretch" Stretch="Uniform" IsVisible="{Binding !PlayingTrack.DoesHaveCover}">
+							<iconPacks:PackIconLucide Kind="Music" Padding="4" Background="DarkGray" />
+
+						</Viewbox>
+					</Panel>
+				</Border>
+				<DockPanel Grid.Column="1" VerticalAlignment="Stretch">
+					<StackPanel DockPanel.Dock="Top" Spacing="2">
+						<local:ScrollingTextBlock
+							Text="{Binding PlayingTrack.Title, FallbackValue=No track selected}"
+							FontSize="20"
+							ScrollSpeed="20"
+							GapWidth="50"
+							Foreground="White" />
+						<local:ScrollingTextBlock
+							Text="{Binding PlayingTrack.Artist, FallbackValue=No track selected}"
+							ScrollSpeed="20"
+							GapWidth="50"
+							Foreground="White" />
+						<local:ScrollingTextBlock
+							Text="{Binding PlayingTrack.Genre, FallbackValue=No track selected}"
+							ScrollSpeed="20"
+							GapWidth="50"
+							Foreground="White" />
+					</StackPanel>
+
+					<Grid DockPanel.Dock="Bottom" VerticalAlignment="Bottom" HorizontalAlignment="Stretch" ColumnDefinitions="Auto, *" RowDefinitions="Auto, *" ColumnSpacing="16">
+						<StackPanel Grid.ColumnSpan="2" HorizontalAlignment="Stretch">
+							<DockPanel HorizontalAlignment="Stretch">
+								<TextBlock DockPanel.Dock="Left" Text="{Binding Time, Converter={StaticResource LongConverter}}" />
+								<TextBlock DockPanel.Dock="Right" TextAlignment="Right" Text="{Binding Duration, Converter={StaticResource LongConverter}}" />
+							</DockPanel>
+							<Slider
+								Minimum="0"
+								Maximum="{Binding Duration}"
+								Value="{Binding SliderTime, Mode=OneWay}"
+								IsSnapToTickEnabled="False"
+								x:Name="SeekSlider">
+							</Slider>
+						</StackPanel>
+
+						<StackPanel Grid.Row="1" Grid.Column="0" Orientation="Horizontal" Spacing="2">
+							<Button Command="{Binding PlayPreviousCommand}">
+								<iconPacks:PackIconLucide Kind="ArrowLeftToLine" HorizontalAlignment="Center" VerticalAlignment="Center" Padding="2" />
+							</Button>
+							<ToggleButton IsChecked="{Binding IsPlaying}">
+								<Panel>
+									<iconPacks:PackIconLucide IsVisible="{Binding IsPlaying}" Kind="Play" HorizontalAlignment="Center" VerticalAlignment="Center" Padding="2" />
+									<iconPacks:PackIconLucide IsVisible="{Binding !IsPlaying}" Kind="Pause" HorizontalAlignment="Center" VerticalAlignment="Center" Padding="2" />
+								</Panel>
+							</ToggleButton>
+							<Button>
+								<iconPacks:PackIconLucide Kind="ArrowRightToLine" HorizontalAlignment="Center" VerticalAlignment="Center" Padding="2" />
+							</Button>
+						</StackPanel>
+						<Grid Grid.Row="1" Grid.Column="1" ColumnDefinitions="Auto, *" HorizontalAlignment="Stretch" ColumnSpacing="4">
+							<ToggleButton Command="{Binding ToggleMuteCommand}" IsChecked="{Binding Muted}">
+								<iconPacks:PackIconLucide Kind="VolumeOff" HorizontalAlignment="Center" VerticalAlignment="Center" Padding="2" />
+							</ToggleButton>
+							<Slider Grid.Column="1" Maximum="100" Value="{Binding Volume}" />
+						</Grid>
+					</Grid>
+				</DockPanel>
+			</Grid>
+		</Grid>
+	</Panel>
+</Window>

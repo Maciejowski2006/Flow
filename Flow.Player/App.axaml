@@ -1,0 +1,20 @@
+<Application xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             x:Class="Flow.Player.App"
+             xmlns:local="using:Flow.Player"
+             xmlns:converters="using:Flow.Player.Converters"
+             RequestedThemeVariant="Dark">
+	<!-- "Default" ThemeVariant follows system theme variant. "Dark" or "Light" are other available options. -->
+
+	<Application.DataTemplates>
+		<local:ViewLocator />
+	</Application.DataTemplates>
+	<Application.Resources>
+		<converters:LongConverter x:Key="LongConverter" />
+	</Application.Resources>
+
+	<Application.Styles>
+		<FluentTheme />
+		<StyleInclude Source="avares://IconPacks.Avalonia.Lucide/Lucide.axaml" />
+	</Application.Styles>
+</Application>
