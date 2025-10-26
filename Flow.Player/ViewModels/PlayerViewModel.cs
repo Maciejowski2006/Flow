@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
@@ -64,7 +66,9 @@ public partial class PlayerViewModel() : ViewModelBase
 		if (commandLineArgumentsService.Arguments.Length == 0)
 			return;
 
-		_ = LoadTrack(args[0]);
+		IEnumerable<string> formats = FilePickerService.AudioAll.Patterns!.Select(x => x.Substring(1, x.Length - 1));
+		if (formats.Any(x => args[0].EndsWith(x)))
+			_ = LoadTrack(args[0]);
 	}
 
 	public async Task LoadTrack(string filePath)
