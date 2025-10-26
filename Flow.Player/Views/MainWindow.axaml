@@ -20,6 +20,11 @@
 	<Design.DataContext>
 		<vm:MainWindowViewModel />
 	</Design.DataContext>
+	
+	<Window.KeyBindings>
+		<KeyBinding Gesture="Ctrl+O" Command="{Binding OpenFileCommand}" />
+	</Window.KeyBindings>
+	
 	<Panel>
 		<ExperimentalAcrylicBorder IsHitTestVisible="False">
 			<ExperimentalAcrylicBorder.Material>
@@ -33,15 +38,24 @@
 		<Grid RowDefinitions="30, *">
 			<Menu VerticalAlignment="Center" PointerPressed="InputElement_OnPointerPressed">
 				<MenuItem Header="_Flow">
-					<MenuItem Header="_Play file" Command="{Binding OpenFileCommand}" />
-					<MenuItem Header="_Open playlist" />
-					<MenuItem Header="_Open folder as playlist" />
+					<MenuItem Header="_Open file" Command="{Binding OpenFileCommand}" InputGesture="Ctrl+O" />
+					<MenuItem Header="Open _folder as playlist" InputGesture="Ctrl+Shift+O" />
 					<Separator />
 					<MenuItem Header="_Exit" />
 				</MenuItem>
-				<MenuItem Header="_Edit">
-					<MenuItem Header="Copy" />
-					<MenuItem Header="Paste" />
+				<MenuItem Header="_Play">
+					<MenuItem Header="P_revious" InputGesture="Ctrl+Q" />
+					<MenuItem Header="_Play/Pause" InputGesture="Space" />
+					<MenuItem Header="_Next" InputGesture="Ctrl+E" />
+					<MenuItem Header="-" />
+					<MenuItem Header="_Back 5 seconds" />
+					<MenuItem Header="_Forward 5 seconds" />
+				</MenuItem>
+				<MenuItem Header="_View">
+					<MenuItem Header="_Playlist view" InputGesture="Ctrl+P" />
+				</MenuItem>
+				<MenuItem Header="_Help">
+					<MenuItem Header="_About" />
 				</MenuItem>
 			</Menu>
 			<local:PlayerView Grid.Row="1"></local:PlayerView>
