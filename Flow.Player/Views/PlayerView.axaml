@@ -12,7 +12,7 @@
 		<vm:PlayerViewModel />
 	</Design.DataContext>
 	
-	<Grid Grid.Row="1" Margin="16" ColumnDefinitions="Auto, *" ColumnSpacing="16">
+	<Grid Margin="16" ColumnDefinitions="Auto, *" ColumnSpacing="16">
 				<Border CornerRadius="16" ClipToBounds="True">
 					<Panel>
 						<Image IsVisible="{Binding PlayingTrack.DoesHaveCover, FallbackValue=false}" Source="{Binding PlayingTrack.CoverArt}"></Image>
@@ -53,7 +53,8 @@
 								Maximum="{Binding Duration}"
 								Value="{Binding SliderTime, Mode=OneWay}"
 								IsSnapToTickEnabled="False"
-								x:Name="SeekSlider">
+								x:Name="SeekSlider"
+								Focusable="False">
 							</Slider>
 						</StackPanel>
 
