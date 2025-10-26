@@ -27,7 +27,7 @@ public class Track
 	{
 		FileInfo trackFile = new(path);
 		File? id3 = File.Create(trackFile.FullName);
-		Title = id3.Tag.Title;
+		Title = string.IsNullOrEmpty(id3.Tag.Title) ? trackFile.Name : id3.Tag.Title;
 		Artist = id3.Tag.AlbumArtists?.FirstOrDefault() ?? "";
 		Album = id3.Tag.Album;
 		Genre = id3.Tag.Genres?.FirstOrDefault() ?? "";
