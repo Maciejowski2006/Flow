@@ -7,6 +7,8 @@ namespace Flow.Player.ViewModels;
 
 public partial class MainWindowViewModel() : ViewModelBase
 {
+	private readonly PlayerViewModel _pvm = App.AppServices.GetRequiredService<PlayerViewModel>();
+	
 	[RelayCommand]
 	private async Task OpenFile()
 	{
@@ -14,8 +16,20 @@ public partial class MainWindowViewModel() : ViewModelBase
 		if (file is null)
 			return;
 
-		PlayerViewModel pvm = App.AppServices.GetRequiredService<PlayerViewModel>();
-		
-		await pvm.LoadTrack(file.Path.LocalPath);
+		await _pvm.LoadTrack(file.Path.LocalPath);
 	}
+	
+	public IRelayCommand PlayPreviousCommand => _pvm.PlayPreviousCommand;
+
+	[RelayCommand]
+	private void ToggleMute()
+	{
+		_pvm.Muted = !_pvm.Muted;
+		_pvm.ToggleMute();
+	}
+
+	[RelayCommand]
+	private void SeekBack() => _pvm.Seek(-5);
+	[RelayCommand]
+	private void SeekForward() => _pvm.Seek(5);
 }

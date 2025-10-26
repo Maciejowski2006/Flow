@@ -23,6 +23,9 @@
 	
 	<Window.KeyBindings>
 		<KeyBinding Gesture="Ctrl+O" Command="{Binding OpenFileCommand}" />
+		
+		<KeyBinding Gesture="Ctrl+Q" Command="{Binding PlayPreviousCommand}"></KeyBinding>
+		<KeyBinding Gesture="Ctrl+M" Command="{Binding ToggleMuteCommand}"></KeyBinding>
 	</Window.KeyBindings>
 	
 	<Panel>
@@ -44,12 +47,14 @@
 					<MenuItem Header="_Exit" />
 				</MenuItem>
 				<MenuItem Header="_Play">
-					<MenuItem Header="P_revious" InputGesture="Ctrl+Q" />
+					<MenuItem Header="P_revious" InputGesture="Ctrl+Q" Command="{Binding PlayPreviousCommand}" />
 					<MenuItem Header="_Play/Pause" InputGesture="Space" />
 					<MenuItem Header="_Next" InputGesture="Ctrl+E" />
 					<MenuItem Header="-" />
-					<MenuItem Header="_Back 5 seconds" />
-					<MenuItem Header="_Forward 5 seconds" />
+					<MenuItem Header="_Back 5 seconds" InputGesture="Left" Command="{Binding SeekBackCommand}" />
+					<MenuItem Header="_Forward 5 seconds" InputGesture="Right" Command="{Binding SeekForwardCommand}" />
+					<MenuItem Header="-" />
+					<MenuItem Header="_Mute" InputGesture="Ctrl+M" Command="{Binding ToggleMuteCommand}" />
 				</MenuItem>
 				<MenuItem Header="_View">
 					<MenuItem Header="_Playlist view" InputGesture="Ctrl+P" />

@@ -4,11 +4,10 @@ using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using Flow.Player.Models;
 using Flow.Player.Services;
-using Microsoft.Extensions.DependencyInjection;
 
 namespace Flow.Player.ViewModels;
 
-public partial class PlayerViewModel : ViewModelBase
+public partial class PlayerViewModel() : ViewModelBase
 {
 	public bool IsSeeking { get; set; }
 	[ObservableProperty] private Track? _playingTrack;
@@ -56,22 +55,18 @@ public partial class PlayerViewModel : ViewModelBase
 
 	[ObservableProperty] private bool _muted;
 	private readonly IMediaPlayerService _player;
-	private readonly CommandLineArgumentsService _commandLineArguments;
 
-	public PlayerViewModel(IMediaPlayerService playerService, CommandLineArgumentsService commandLineArgumentsService)
+	public PlayerViewModel(IMediaPlayerService playerService, CommandLineArgumentsService commandLineArgumentsService) : this()
 	{
 		_player = playerService;
-		_commandLineArguments = commandLineArgumentsService;
 
-		
-		string[] args = _commandLineArguments.Arguments;
-		if (_commandLineArguments.Arguments.Length == 0)
+		string[] args = commandLineArgumentsService.Arguments;
+		if (commandLineArgumentsService.Arguments.Length == 0)
 			return;
 
 		_ = LoadTrack(args[0]);
-
 	}
-	
+
 	public async Task LoadTrack(string filePath)
 	{
 		PlayingTrack = new(filePath);
@@ -89,23 +84,17 @@ public partial class PlayerViewModel : ViewModelBase
 	
 	
 	[RelayCommand]
-	private void ToggleMute()
-	{
-		_player.SetMute(Muted);
-	}
+	public void ToggleMute() => _player.SetMute(Muted);
 	
-	public void SeekTo(long value)
-	{
-		_player.Time = value;
-	}
+	
+	public void SeekTo(long value) => _player.Time = value;
+	
 	/// <summary>
 	/// Seeks by defined amount of seconds
 	/// </summary>
 	/// <param name="value">Time in seconds</param>
-	public void Seek(long value)
-	{
-		_player.Time += value * 1000;
-	}
+	public void Seek(long value) => _player.Time += value * 1000;
+	
 
 	[RelayCommand]
 	private void PlayPrevious()
