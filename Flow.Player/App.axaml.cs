@@ -7,6 +7,7 @@ using Flow.Player.Services;
 using Flow.Player.ViewModels;
 using Flow.Player.Views;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.DependencyInjection.Extensions;
 
 namespace Flow.Player;
 
@@ -30,18 +31,12 @@ public partial class App : Application
 			DisableAvaloniaDataAnnotationValidation();
 			ServiceCollection appServices = new();
 			appServices.AddSingleton<IMediaPlayerService, MediaPlayerService>();
+			appServices.AddSingleton<CommandLineArgumentsService>(_ => new(desktop.Args));
+			appServices.AddSingleton<PlayerViewModel>();
 			
 			AppServices = appServices.BuildServiceProvider();
-
-			if (desktop.Args is { Length: > 0 })
-			{
-				string? filePath = desktop.Args?[0];
-				desktop.MainWindow = new MainWindow(filePath);
-			}
-			else
-			{
-				desktop.MainWindow = new MainWindow();
-			}
+			
+			desktop.MainWindow = new MainWindow();
 			
 			ServiceCollection services = new();
 			services.AddSingleton<IFilePickerService>(_ => new FilePickerService(desktop.MainWindow));
