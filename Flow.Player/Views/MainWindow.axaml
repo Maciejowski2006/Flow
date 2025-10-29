@@ -12,7 +12,7 @@
         Title="Flow.Player"
         TransparencyLevelHint="AcrylicBlur"
         Background="Transparent"
-        CanResize="False"
+        CanResize="True"
         WindowStartupLocation="CenterScreen"
         ExtendClientAreaToDecorationsHint="True"
         Focusable="True" PointerWheelChanged="VolumeSliderScroll">

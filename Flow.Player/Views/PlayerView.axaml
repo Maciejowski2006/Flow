@@ -11,74 +11,76 @@
 	<Design.DataContext>
 		<vm:PlayerViewModel />
 	</Design.DataContext>
-	
+
 	<Grid Margin="16" ColumnDefinitions="Auto, *" ColumnSpacing="16">
-				<Border CornerRadius="16" ClipToBounds="True">
-					<Panel>
-						<Image IsVisible="{Binding PlayingTrack.DoesHaveCover, FallbackValue=false}" Source="{Binding PlayingTrack.CoverArt}"></Image>
-						<Viewbox VerticalAlignment="Stretch" Stretch="Uniform" IsVisible="{Binding !PlayingTrack.DoesHaveCover}">
-							<iconPacks:PackIconLucide Kind="Music" Padding="4" Background="DarkGray" />
+		<Panel MaxWidth="300" MaxHeight="300" x:Name="CoverArt">
+			<Border CornerRadius="16" ClipToBounds="True">
+				<Panel>
+					<Image IsVisible="{Binding PlayingTrack.DoesHaveCover, FallbackValue=false}" Source="{Binding PlayingTrack.CoverArt}"></Image>
+					<Viewbox VerticalAlignment="Stretch" Stretch="Uniform" IsVisible="{Binding !PlayingTrack.DoesHaveCover}">
+						<iconPacks:PackIconLucide Kind="Music" Padding="4" Background="DarkGray" />
 
-						</Viewbox>
-					</Panel>
-				</Border>
-				<DockPanel Grid.Column="1" VerticalAlignment="Stretch">
-					<StackPanel DockPanel.Dock="Top" Spacing="2">
-						<local:ScrollingTextBlock
-							Text="{Binding PlayingTrack.Title, FallbackValue=No track selected}"
-							FontSize="20"
-							ScrollSpeed="20"
-							GapWidth="50"
-							Foreground="White" />
-						<local:ScrollingTextBlock
-							Text="{Binding PlayingTrack.Artist, FallbackValue=No track selected}"
-							ScrollSpeed="20"
-							GapWidth="50"
-							Foreground="White" />
-						<local:ScrollingTextBlock
-							Text="{Binding PlayingTrack.Genre, FallbackValue=No track selected}"
-							ScrollSpeed="20"
-							GapWidth="50"
-							Foreground="White" />
-					</StackPanel>
+					</Viewbox>
+				</Panel>
+			</Border>
+		</Panel>
+		<DockPanel Grid.Column="1" VerticalAlignment="Stretch">
+			<StackPanel DockPanel.Dock="Top" Spacing="2">
+				<local:ScrollingTextBlock
+					Text="{Binding PlayingTrack.Title, FallbackValue=No track selected}"
+					FontSize="20"
+					ScrollSpeed="20"
+					GapWidth="50"
+					Foreground="White" />
+				<local:ScrollingTextBlock
+					Text="{Binding PlayingTrack.Artist, FallbackValue=No track selected}"
+					ScrollSpeed="20"
+					GapWidth="50"
+					Foreground="White" />
+				<local:ScrollingTextBlock
+					Text="{Binding PlayingTrack.Genre, FallbackValue=No track selected}"
+					ScrollSpeed="20"
+					GapWidth="50"
+					Foreground="White" />
+			</StackPanel>
 
-					<Grid DockPanel.Dock="Bottom" VerticalAlignment="Bottom" HorizontalAlignment="Stretch" ColumnDefinitions="Auto, *" RowDefinitions="Auto, *" ColumnSpacing="16">
-						<StackPanel Grid.ColumnSpan="2" HorizontalAlignment="Stretch">
-							<DockPanel HorizontalAlignment="Stretch">
-								<TextBlock DockPanel.Dock="Left" Text="{Binding Time, Converter={StaticResource LongConverter}}" />
-								<TextBlock DockPanel.Dock="Right" TextAlignment="Right" Text="{Binding Duration, Converter={StaticResource LongConverter}}" />
-							</DockPanel>
-							<Slider
-								Minimum="0"
-								Maximum="{Binding Duration}"
-								Value="{Binding SliderTime, Mode=OneWay}"
-								IsSnapToTickEnabled="False"
-								x:Name="SeekSlider"
-								Focusable="False">
-							</Slider>
-						</StackPanel>
+			<Grid DockPanel.Dock="Bottom" VerticalAlignment="Bottom" HorizontalAlignment="Stretch" ColumnDefinitions="Auto, *" RowDefinitions="Auto, *" ColumnSpacing="16">
+				<StackPanel Grid.ColumnSpan="2" HorizontalAlignment="Stretch">
+					<DockPanel HorizontalAlignment="Stretch">
+						<TextBlock DockPanel.Dock="Left" Text="{Binding Time, Converter={StaticResource LongConverter}}" />
+						<TextBlock DockPanel.Dock="Right" TextAlignment="Right" Text="{Binding Duration, Converter={StaticResource LongConverter}}" />
+					</DockPanel>
+					<Slider
+						Minimum="0"
+						Maximum="{Binding Duration}"
+						Value="{Binding SliderTime, Mode=OneWay}"
+						IsSnapToTickEnabled="False"
+						x:Name="SeekSlider"
+						Focusable="False">
+					</Slider>
+				</StackPanel>
 
-						<StackPanel Grid.Row="1" Grid.Column="0" Orientation="Horizontal" Spacing="2">
-							<Button Command="{Binding PlayPreviousCommand}">
-								<iconPacks:PackIconLucide Kind="ArrowLeftToLine" HorizontalAlignment="Center" VerticalAlignment="Center" Padding="2" />
-							</Button>
-							<ToggleButton IsChecked="{Binding IsPlaying}">
-								<Panel>
-									<iconPacks:PackIconLucide IsVisible="{Binding IsPlaying}" Kind="Play" HorizontalAlignment="Center" VerticalAlignment="Center" Padding="2" />
-									<iconPacks:PackIconLucide IsVisible="{Binding !IsPlaying}" Kind="Pause" HorizontalAlignment="Center" VerticalAlignment="Center" Padding="2" />
-								</Panel>
-							</ToggleButton>
-							<Button>
-								<iconPacks:PackIconLucide Kind="ArrowRightToLine" HorizontalAlignment="Center" VerticalAlignment="Center" Padding="2" />
-							</Button>
-						</StackPanel>
-						<Grid Grid.Row="1" Grid.Column="1" ColumnDefinitions="Auto, *" HorizontalAlignment="Stretch" ColumnSpacing="4">
-							<ToggleButton Command="{Binding ToggleMuteCommand}" IsChecked="{Binding Muted}">
-								<iconPacks:PackIconLucide Kind="VolumeOff" HorizontalAlignment="Center" VerticalAlignment="Center" Padding="2" />
-							</ToggleButton>
-							<Slider Grid.Column="1" Maximum="100" Value="{Binding Volume}" />
-						</Grid>
-					</Grid>
-				</DockPanel>
+				<StackPanel Grid.Row="1" Grid.Column="0" Orientation="Horizontal" Spacing="2">
+					<Button Command="{Binding PlayPreviousCommand}">
+						<iconPacks:PackIconLucide Kind="ArrowLeftToLine" HorizontalAlignment="Center" VerticalAlignment="Center" Padding="2" />
+					</Button>
+					<ToggleButton IsChecked="{Binding IsPlaying}">
+						<Panel>
+							<iconPacks:PackIconLucide IsVisible="{Binding IsPlaying}" Kind="Play" HorizontalAlignment="Center" VerticalAlignment="Center" Padding="2" />
+							<iconPacks:PackIconLucide IsVisible="{Binding !IsPlaying}" Kind="Pause" HorizontalAlignment="Center" VerticalAlignment="Center" Padding="2" />
+						</Panel>
+					</ToggleButton>
+					<Button>
+						<iconPacks:PackIconLucide Kind="ArrowRightToLine" HorizontalAlignment="Center" VerticalAlignment="Center" Padding="2" />
+					</Button>
+				</StackPanel>
+				<Grid Grid.Row="1" Grid.Column="1" ColumnDefinitions="Auto, *" HorizontalAlignment="Stretch" ColumnSpacing="4">
+					<ToggleButton Command="{Binding ToggleMuteCommand}" IsChecked="{Binding Muted}">
+						<iconPacks:PackIconLucide Kind="VolumeOff" HorizontalAlignment="Center" VerticalAlignment="Center" Padding="2" />
+					</ToggleButton>
+					<Slider Grid.Column="1" Maximum="100" Value="{Binding Volume}" />
+				</Grid>
 			</Grid>
+		</DockPanel>
+	</Grid>
 </UserControl>
