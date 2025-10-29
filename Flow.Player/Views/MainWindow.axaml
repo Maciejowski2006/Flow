@@ -32,7 +32,7 @@
 		<ExperimentalAcrylicBorder IsHitTestVisible="False" IsVisible="{Binding !IsLinux}">
 			<ExperimentalAcrylicBorder.Material>
 				<ExperimentalAcrylicMaterial
-					BackgroundSource="None"
+					BackgroundSource="Digger"
 					TintColor="Black"
 					TintOpacity="0.5"
 					MaterialOpacity="0.1" />
