@@ -29,15 +29,16 @@
 	</Window.KeyBindings>
 	
 	<Panel>
-		<ExperimentalAcrylicBorder IsHitTestVisible="False">
+		<ExperimentalAcrylicBorder IsHitTestVisible="False" IsVisible="{Binding !IsLinux}">
 			<ExperimentalAcrylicBorder.Material>
 				<ExperimentalAcrylicMaterial
-					BackgroundSource="Digger"
+					BackgroundSource="None"
 					TintColor="Black"
 					TintOpacity="0.5"
 					MaterialOpacity="0.1" />
 			</ExperimentalAcrylicBorder.Material>
 		</ExperimentalAcrylicBorder>
+		<Border IsVisible="{Binding IsLinux}" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Background="Black" Opacity="0.5" />
 		<Grid RowDefinitions="30, *">
 			<Menu VerticalAlignment="Center" PointerPressed="InputElement_OnPointerPressed">
 				<MenuItem Header="_Flow">
