@@ -8,7 +8,7 @@
         mc:Ignorable="d" Width="620" Height="250"
         x:Class="Flow.Player.Views.MainWindow"
         x:DataType="vm:MainWindowViewModel"
-        Icon="/Assets/avalonia-logo.ico"
+        Icon="/Assets/Flow.ico"
         Title="Flow.Player"
         TransparencyLevelHint="AcrylicBlur"
         Background="Transparent"
