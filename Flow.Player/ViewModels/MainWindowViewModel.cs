@@ -1,5 +1,7 @@
-﻿using System.Threading.Tasks;
+﻿using System;
+using System.Threading.Tasks;
 using Avalonia.Platform.Storage;
+using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using Microsoft.Extensions.DependencyInjection;
 
@@ -7,6 +9,7 @@ namespace Flow.Player.ViewModels;
 
 public partial class MainWindowViewModel() : ViewModelBase
 {
+	public bool IsLinux => OperatingSystem.IsLinux();
 	private readonly PlayerViewModel _pvm = App.AppServices.GetRequiredService<PlayerViewModel>();
 	
 	[RelayCommand]

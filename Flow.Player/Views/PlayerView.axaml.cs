@@ -1,4 +1,5 @@
-﻿using Avalonia.Controls;
+﻿using System;
+using Avalonia.Controls;
 using Avalonia.Input;
 using Avalonia.Interactivity;
 using Flow.Player.ViewModels;
@@ -26,7 +27,14 @@ public partial class PlayerView : UserControl
 		_slider.AddHandler(PointerPressedEvent, OnSeekBarPointerPressed, RoutingStrategies.Tunnel);
 		_slider.AddHandler(PointerReleasedEvent, OnSeekBarPointerReleased, RoutingStrategies.Tunnel);
 	}
-	
+
+	protected override void OnSizeChanged(SizeChangedEventArgs e)
+	{
+		base.OnSizeChanged(e);
+
+		CoverArt.IsVisible = e.NewSize.Width > CoverArt.Bounds.Width + 300;
+	}
+
 	private void OnSeekBarPointerPressed(object? sender, PointerPressedEventArgs e)
 	{
 		if (DataContext is not PlayerViewModel vm)
