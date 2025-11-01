@@ -2,6 +2,7 @@
 A beautiful, cross-platform music player written in Avalonia and C#.
 
 ![Flow Player](https://github.com/Maciejowski2006/Flow/blob/main/.github/player.png?raw=true)
+<br>
 The music playing is [ValueFactory @ Furality Umbra](https://youtu.be/YHAv69l-8Tg), and the cover is made by [MaxFilmsVR](https://x.com/MaxFilmsVR/status/1813521301455438204).
 
 ### Features
