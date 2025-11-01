@@ -1,8 +1,13 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using LibVLCSharp.Shared;
+using LibVLCSharp.Shared.Structures;
 
 namespace Flow.Player.Services;
+
+
 
 public class MediaPlayerService : IMediaPlayerService, IDisposable
 {
@@ -33,6 +38,26 @@ public class MediaPlayerService : IMediaPlayerService, IDisposable
 			_mediaPlayer.Volume = value;
 		}
 	}
+	public List<AudioOutputGroup> AudioOutputGroups
+	{
+		get
+		{
+			List<AudioOutputGroup> outputGroups = [];
+			AudioOutputDescription[] audioGroups = _libVlc.AudioOutputs;
+
+			foreach (AudioOutputDescription group in audioGroups)
+			{
+				LibVLCSharp.Shared.Structures.AudioOutputDevice[] devices = _libVlc.AudioOutputDevices(group.Name);
+				List<AudioOutputDevice> deviceIter = devices.Select(dev => new AudioOutputDevice(dev.Description, dev.DeviceIdentifier)).ToList();
+				if (deviceIter.Count == 0)
+					continue;
+				outputGroups.Add(new(group.Name, group.Description, deviceIter));
+			}
+			
+			return outputGroups;
+		}
+	}
+	public string? CurrentOutputDeviceId => _mediaPlayer?.OutputDevice;
 	public async Task LoadFile(string filePath)
 	{
 		// Dispose if there was a track playing before
@@ -66,7 +91,7 @@ public class MediaPlayerService : IMediaPlayerService, IDisposable
 	{
 		if (_media is null)
 			return -1;
-
+		
 		return _media.Duration;
 	}
 	public void SetTimeCallback(EventHandler<MediaPlayerTimeChangedEventArgs> callback)
@@ -75,6 +100,13 @@ public class MediaPlayerService : IMediaPlayerService, IDisposable
 			return;
 
 		_mediaPlayer.TimeChanged += callback;
+	}
+	public void SetOutputDevice(string id)
+	{
+		if (_mediaPlayer is null)
+			return;
+		
+		_mediaPlayer.SetOutputDevice(id);
 	}
 
 	public void Dispose()

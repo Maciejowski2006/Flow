@@ -6,6 +6,7 @@ using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using Flow.Player.Models;
 using Flow.Player.Services;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace Flow.Player.ViewModels;
 
@@ -84,6 +85,7 @@ public partial class PlayerViewModel() : ViewModelBase
 		IsPlaying = true;
 		OnPropertyChanged(nameof(SliderTime));
 		OnPropertyChanged(nameof(PlayingTrack));
+		App.AppServices.GetRequiredService<MainWindowViewModel>().FillAudioOutputGroups(_player);
 	}
 	
 	

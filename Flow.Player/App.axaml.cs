@@ -33,6 +33,7 @@ public partial class App : Application
 			appServices.AddSingleton<IMediaPlayerService, MediaPlayerService>();
 			appServices.AddSingleton<CommandLineArgumentsService>(_ => new(desktop.Args));
 			appServices.AddSingleton<PlayerViewModel>();
+			appServices.AddSingleton<MainWindowViewModel>();
 			
 			AppServices = appServices.BuildServiceProvider();
 			
