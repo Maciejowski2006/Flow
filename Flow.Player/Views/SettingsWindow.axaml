@@ -40,7 +40,9 @@
 				<TabItem Header="Appearance">
 					<settings:Appearance />
 				</TabItem>
-				
+				<TabItem Header="About">
+					<settings:About />
+				</TabItem>
 			</TabControl>
 		</Grid>
 	</local:BlurView>

@@ -40,5 +40,6 @@ public class UpdateManagerService
 		if (_updateManager.UpdatePendingRestart is { } asset)
 			_updateManager.ApplyUpdatesAndExit(asset);
 	}
-	
+
+	public string? Version => _updateManager.CurrentVersion?.ToString();
 }
