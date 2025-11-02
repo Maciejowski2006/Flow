@@ -13,9 +13,8 @@ public class UpdateManagerService
 	private readonly UpdateManager _updateManager;
 	public UpdateManagerService()
 	{
-		TestVelopackLocator test = new TestVelopackLocator("Flow", "1.0.0", "");
 		GithubSource source = new("https://github.com/Maciejowski2006/Flow", null, false);
-		_updateManager = new(source, new(), test);
+		_updateManager = new(source, new());
 	}
 	public async Task<UpdateInfo?> CheckForUpdatesAsync()
 	{
