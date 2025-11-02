@@ -85,7 +85,6 @@ public partial class PlayerViewModel() : ViewModelBase
 		IsPlaying = true;
 		OnPropertyChanged(nameof(SliderTime));
 		OnPropertyChanged(nameof(PlayingTrack));
-		App.AppServices.GetRequiredService<MainWindowViewModel>().FillAudioOutputGroups(_player);
 	}
 	
 	

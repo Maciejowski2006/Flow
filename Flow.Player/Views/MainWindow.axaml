@@ -23,6 +23,7 @@
 
 	<Window.KeyBindings>
 		<KeyBinding Gesture="Ctrl+O" Command="{Binding OpenFileCommand}" />
+		<KeyBinding Gesture="Ctrl+," Command="{Binding OpenSettingsCommand}" />
 
 		<KeyBinding Gesture="Ctrl+Q" Command="{Binding PlayPreviousCommand}"></KeyBinding>
 		<KeyBinding Gesture="Ctrl+M" Command="{Binding ToggleMuteCommand}"></KeyBinding>
@@ -37,6 +38,8 @@
 					<Separator />
 					<MenuItem Header="Check for _updates" Command="{Binding CheckForUpdatesCommand}" CommandParameter="{x:True}" />
 					<Separator />
+					<MenuItem Header="_Settings" Command="{Binding OpenSettingsCommand}" CommandParameter="{x:True}" InputGesture="Ctrl+," />
+					<Separator />
 					<MenuItem Header="_Exit" />
 				</MenuItem>
 				<MenuItem Header="_Play">
@@ -48,22 +51,6 @@
 					<MenuItem Header="_Forward 5 seconds" InputGesture="Right" Command="{Binding SeekForwardCommand}" />
 					<MenuItem Header="-" />
 					<MenuItem Header="_Mute" InputGesture="Ctrl+M" Command="{Binding ToggleMuteCommand}" />
-				</MenuItem>
-				<MenuItem Header="P_layback">
-					<MenuItem Header="_Output device" ItemsSource="{Binding AudioOutputGroups}" Icon="{x:Null}">
-						<MenuItem.Styles>
-							<Style Selector="MenuItem" x:DataType="vm:AudioMenuItem">
-								<Setter Property="Header" Value="{Binding Name}"/>
-								<Setter Property="IsEnabled" Value="{Binding !IsGroup}" />
-								<Setter Property="Command" Value="{Binding Command}" />
-								<Setter Property="Icon">
-									<Template>
-										<iconPacks:PackIconLucide Kind="Check" IsVisible="{Binding IsSelected}" />
-									</Template>
-								</Setter>
-							</Style>
-						</MenuItem.Styles>
-					</MenuItem>
 				</MenuItem>
 				<MenuItem Header="_View">
 					<MenuItem Header="_Playlist view" InputGesture="Ctrl+P" />
