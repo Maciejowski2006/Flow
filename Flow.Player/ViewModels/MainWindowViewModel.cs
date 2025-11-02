@@ -66,13 +66,21 @@ public partial class MainWindowViewModel : ViewModelBase
 	}
 
 	[RelayCommand]
-	private async Task CheckForUpdates()
+	private async Task CheckForUpdates(bool? triggeredByUser = false)
 	{
 		UpdateManagerService updateManager = App.AppServices.GetRequiredService<UpdateManagerService>();
 		UpdateInfo? update = await updateManager.CheckForUpdatesAsync();
-		if (update is null)
-			return;
-		
+		switch (update)
+		{
+			case null when triggeredByUser ?? false:
+			{
+				await WeakReferenceMessenger.Default.Send(new ShowDialogMessage("You are using the latest version of Flow.", MessageBoxButtons.Ok));
+				return;
+			}
+			case null:
+				return;
+		}
+
 		MessageBoxReturn? userWishesToUpdate = await WeakReferenceMessenger.Default.Send(
 			new ShowDialogMessage("There is new update available, do you want to update?\n"
 			                      + $"New Version: {update.TargetFullRelease.Version}\n"

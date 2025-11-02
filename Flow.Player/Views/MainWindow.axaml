@@ -35,7 +35,7 @@
 					<MenuItem Header="_Open file" Command="{Binding OpenFileCommand}" InputGesture="Ctrl+O" />
 					<MenuItem Header="Open _folder as playlist" InputGesture="Ctrl+Shift+O" />
 					<Separator />
-					<MenuItem Header="Check for _updates" Command="{Binding CheckForUpdatesCommand}" />
+					<MenuItem Header="Check for _updates" Command="{Binding CheckForUpdatesCommand}" CommandParameter="{x:True}" />
 					<Separator />
 					<MenuItem Header="_Exit" />
 				</MenuItem>
