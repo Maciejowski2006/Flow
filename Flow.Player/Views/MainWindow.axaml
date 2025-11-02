@@ -28,17 +28,7 @@
 		<KeyBinding Gesture="Ctrl+M" Command="{Binding ToggleMuteCommand}"></KeyBinding>
 	</Window.KeyBindings>
 
-	<Panel>
-		<ExperimentalAcrylicBorder IsHitTestVisible="False" IsVisible="{Binding !IsLinux}">
-			<ExperimentalAcrylicBorder.Material>
-				<ExperimentalAcrylicMaterial
-					BackgroundSource="Digger"
-					TintColor="Black"
-					TintOpacity="0.5"
-					MaterialOpacity="0.1" />
-			</ExperimentalAcrylicBorder.Material>
-		</ExperimentalAcrylicBorder>
-		<Border IsVisible="{Binding IsLinux}" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Background="Black" Opacity="0.5" />
+	<local:BlurView>
 		<Grid RowDefinitions="30, *">
 			<Menu VerticalAlignment="Center" PointerPressed="InputElement_OnPointerPressed">
 				<MenuItem Header="_Flow">
@@ -79,5 +69,5 @@
 			</Menu>
 			<local:PlayerView Grid.Row="1"></local:PlayerView>
 		</Grid>
-	</Panel>
+	</local:BlurView>
 </Window>
