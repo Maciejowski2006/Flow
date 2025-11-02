@@ -40,7 +40,7 @@
 					<Separator />
 					<MenuItem Header="_Settings" Command="{Binding OpenSettingsCommand}" CommandParameter="{x:True}" InputGesture="Ctrl+," />
 					<Separator />
-					<MenuItem Header="_Exit" />
+					<MenuItem Header="_Exit" Click="Exit_Click" />
 				</MenuItem>
 				<MenuItem Header="_Play">
 					<MenuItem Header="P_revious" InputGesture="Ctrl+Q" Command="{Binding PlayPreviousCommand}" />
