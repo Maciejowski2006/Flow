@@ -1,8 +1,11 @@
 ﻿using Avalonia;
 using System;
 using Avalonia.Controls.Shapes;
+using Avalonia.Logging;
 using Microsoft.Win32;
+using Serilog;
 using Velopack;
+using LogEventLevel = Serilog.Events.LogEventLevel;
 using Path = System.IO.Path;
 
 namespace Flow.Player;
@@ -15,9 +18,35 @@ sealed class Program
 	[STAThread]
 	public static void Main(string[] args)
 	{
-		VelopackApp.Build().OnFirstRun(v => RegisterAsMusicPlayerApp()).Run();
+		Log.Logger = new LoggerConfiguration()
+			.MinimumLevel.Debug()
+			.MinimumLevel.Override("Microsoft", (LogEventLevel)Avalonia.Logging.LogEventLevel.Information)
+			.Enrich.FromLogContext()
+			.WriteTo.Console()
+			.WriteTo.File(
+				path: Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "Flow", "logs", "app-.log"),
+				rollingInterval: RollingInterval.Day,
+				outputTemplate: "[{Timestamp:yyyy-MM-dd HH:mm:ss.fff zzz} {Level:u3}] {Message:lj}{NewLine}{Exception}",
+				retainedFileCountLimit: 30)
+			.CreateLogger();
 
-		BuildAvaloniaApp().StartWithClassicDesktopLifetime(args);
+		try
+		{
+			Log.Information("Starting application");
+
+			VelopackApp.Build().OnFirstRun(v => RegisterAsMusicPlayerApp()).Run();
+			BuildAvaloniaApp().StartWithClassicDesktopLifetime(args);
+		}
+		catch (Exception e)
+		{
+			Log.Fatal(e, "Application terminated unexpectedly");
+		}
+		finally
+		{
+			Log.CloseAndFlush();
+		}
+		
+		
 	}
 
 	// Avalonia configuration, don't remove; also used by visual designer.
@@ -26,7 +55,7 @@ sealed class Program
 			.UsePlatformDetect()
 			.WithInterFont()
 			.LogToTrace();
-
+	
 	private static void RegisterAsMusicPlayerApp()
 	{
 		if (!OperatingSystem.IsWindows())
