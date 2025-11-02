@@ -23,6 +23,10 @@ public partial class MainWindow : Window
 			m.Reply(dialog.ShowDialog<MessageBoxReturn?>(w));
 		});
 	}
+	protected override void OnLoaded(RoutedEventArgs e)
+	{
+		base.OnLoaded(e);
+		_viewModel.CheckForUpdatesCommand.Execute(null);
 	}
 
 	protected override void OnKeyDown(KeyEventArgs e)

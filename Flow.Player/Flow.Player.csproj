@@ -29,6 +29,7 @@
         <PackageReference Include="IconPacks.Avalonia.Lucide" Version="1.2.0" />
         <PackageReference Include="LibVLCSharp" Version="3.9.4" />
         <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="9.0.10" />
+        <PackageReference Include="Microsoft.Toolkit.Uwp.Notifications" Version="7.1.3" />
         <PackageReference Include="TagLibSharp" Version="2.3.0" />
         <PackageReference Include="Velopack" Version="0.0.1298" />
         <PackageReference Include="VideoLAN.LibVLC.Windows" Version="3.0.21" />

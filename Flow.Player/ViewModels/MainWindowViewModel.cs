@@ -4,7 +4,13 @@ using System.Threading.Tasks;
 using System.Windows.Input;
 using Avalonia.Platform.Storage;
 using CommunityToolkit.Mvvm.Input;
+using CommunityToolkit.Mvvm.Messaging;
+using Flow.Player.Messages;
+using Flow.Player.Services;
+using Flow.Player.Views;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Toolkit.Uwp.Notifications;
+using Velopack;
 
 namespace Flow.Player.ViewModels;
 
@@ -19,7 +25,6 @@ public class AudioMenuItem
 
 public partial class MainWindowViewModel : ViewModelBase
 {
-	public bool IsLinux => OperatingSystem.IsLinux();
 	private readonly PlayerViewModel _pvm = App.AppServices.GetRequiredService<PlayerViewModel>();
 	public ObservableCollection<AudioMenuItem> AudioOutputGroups { get; } = [];
 
@@ -59,7 +64,40 @@ public partial class MainWindowViewModel : ViewModelBase
 			}
 		}
 	}
-	
+
+	[RelayCommand]
+	private async Task CheckForUpdates()
+	{
+		UpdateManagerService updateManager = App.AppServices.GetRequiredService<UpdateManagerService>();
+		UpdateInfo? update = await updateManager.CheckForUpdatesAsync();
+		if (update is null)
+			return;
+		
+		MessageBoxReturn? userWishesToUpdate = await WeakReferenceMessenger.Default.Send(
+			new ShowDialogMessage("There is new update available, do you want to update?\n"
+			                      + $"New Version: {update.TargetFullRelease.Version}\n"
+			                      + "You can keep using the app while the update is being downloaded, we'll apply the update when you're done using the app.",
+				MessageBoxButtons.YesNo));
+
+		if (userWishesToUpdate != MessageBoxReturn.Yes)
+			return;
+
+		await updateManager.DownloadUpdatesAsync(update, i =>
+		{
+			if (i == 100)
+			{
+				// TODO: Implement notifications
+				// THIS IS WINDOWS ONLY CODE CREATED FOR TESTING:
+				// new ToastContentBuilder()
+				// 	.AddArgument("action", "update")
+				// 	.AddText("Update is ready to be applied.")
+				// 	.AddText("When you close the app, we'll apply the update.")
+				// 	.Show();
+			}
+		});
+		
+	}
+
 	[RelayCommand]
 	private async Task OpenFile()
 	{
@@ -69,7 +107,7 @@ public partial class MainWindowViewModel : ViewModelBase
 
 		await _pvm.LoadTrack(file.Path.LocalPath);
 	}
-	
+
 	public IRelayCommand PlayPreviousCommand => _pvm.PlayPreviousCommand;
 
 	[RelayCommand]

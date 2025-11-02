@@ -1,3 +1,4 @@
+using System;
 using Avalonia;
 using Avalonia.Controls.ApplicationLifetimes;
 using Avalonia.Data.Core.Plugins;
@@ -28,10 +29,12 @@ public partial class App : Application
 	{
 		if (ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop)
 		{
+			desktop.Exit += OnExit;
 			DisableAvaloniaDataAnnotationValidation();
 			ServiceCollection appServices = new();
 			appServices.AddSingleton<IMediaPlayerService, MediaPlayerService>();
 			appServices.AddSingleton<CommandLineArgumentsService>(_ => new(desktop.Args));
+			appServices.AddSingleton<UpdateManagerService>();
 			appServices.AddSingleton<PlayerViewModel>();
 			appServices.AddSingleton<MainWindowViewModel>();
 			
@@ -60,5 +63,10 @@ public partial class App : Application
 		{
 			BindingPlugins.DataValidators.Remove(plugin);
 		}
+	}
+
+	private void OnExit(object? sender, ControlledApplicationLifetimeExitEventArgs e)
+	{
+		AppServices.GetRequiredService<UpdateManagerService>().UpdateEndExit();
 	}
 }
