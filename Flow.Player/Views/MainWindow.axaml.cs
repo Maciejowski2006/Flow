@@ -1,6 +1,9 @@
 using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Input;
+using Avalonia.Interactivity;
+using CommunityToolkit.Mvvm.Messaging;
+using Flow.Player.Messages;
 using Flow.Player.ViewModels;
 using Microsoft.Extensions.DependencyInjection;
 
@@ -8,10 +11,18 @@ namespace Flow.Player.Views;
 
 public partial class MainWindow : Window
 {
+	private readonly MainWindowViewModel _viewModel = new();
 	public MainWindow()
 	{
 		InitializeComponent();
-		DataContext = new MainWindowViewModel();
+		DataContext = _viewModel;
+		
+		WeakReferenceMessenger.Default.Register<MainWindow, ShowDialogMessage>(this, static (w, m) =>
+		{
+			MessageBoxWindow dialog = new(m.Message, m.Buttons);
+			m.Reply(dialog.ShowDialog<MessageBoxReturn?>(w));
+		});
+	}
 	}
 
 	protected override void OnKeyDown(KeyEventArgs e)
