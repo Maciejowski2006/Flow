@@ -18,14 +18,25 @@ public class UpdateManagerService
 	}
 	public async Task<UpdateInfo?> CheckForUpdatesAsync()
 	{
+		if (!_updateManager.IsInstalled)
+			return null;
 		
 		UpdateInfo? newVersion = await _updateManager.CheckForUpdatesAsync();
 		return newVersion;
 	}
 
-	public async Task DownloadUpdatesAsync(UpdateInfo updateInfo, Action<int>? progress = null) => await _updateManager.DownloadUpdatesAsync(updateInfo, progress);
+	public async Task DownloadUpdatesAsync(UpdateInfo updateInfo, Action<int>? progress = null)
+	{
+		if (!_updateManager.IsInstalled)
+			return;
+		
+		await _updateManager.DownloadUpdatesAsync(updateInfo, progress);
+	}
 	public void UpdateEndExit()
 	{
+		if (!_updateManager.IsInstalled)
+			return;
+		
 		if (_updateManager.UpdatePendingRestart is { } asset)
 			_updateManager.ApplyUpdatesAndExit(asset);
 	}
