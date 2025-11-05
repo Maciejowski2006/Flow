@@ -1,4 +1,5 @@
-﻿using System.Collections.ObjectModel;
+﻿using System;
+using System.Collections.ObjectModel;
 using System.Linq;
 using Microsoft.Extensions.DependencyInjection;
 
@@ -42,6 +43,12 @@ public class PlaybackViewModel : ViewModelBase
 		}
 		_selectedDevice = _mediaPlayerService.CurrentOutputDeviceId is not null
 			? AudioOutputDevices.First(x => x.Id == _mediaPlayerService.CurrentOutputDeviceId)
-			: AudioOutputDevices.First(x => x.Id == "");
+			: AudioOutputDevices.First(x =>
+			{
+				if (OperatingSystem.IsWindows()) return x.Id == "";
+				if (OperatingSystem.IsLinux()) return x.Id == "default";
+
+				return true;
+			});
 	}
 }
