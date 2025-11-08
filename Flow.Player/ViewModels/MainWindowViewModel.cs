@@ -91,9 +91,9 @@ public partial class MainWindowViewModel : ViewModelBase
 	}
 
 	[RelayCommand]
-	private void SeekBack() => _pvm.Seek(-5);
+	private void SeekBack() => _pvm.Seek(TimeSpan.FromSeconds(-5));
 	[RelayCommand]
-	private void SeekForward() => _pvm.Seek(5);
+	private void SeekForward() => _pvm.Seek(TimeSpan.FromSeconds(5));
 
 	[RelayCommand]
 	private void TogglePlaylistView()

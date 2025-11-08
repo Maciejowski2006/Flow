@@ -49,10 +49,10 @@ public partial class MainWindow : Window
 				vm.IsPlaying = !vm.IsPlaying;
 				break;
 			case Key.Right:
-				vm.Seek(5);
+				vm.Seek(TimeSpan.FromSeconds(5));
 				break;
 			case Key.Left:
-				vm.Seek(-5);
+				vm.Seek(TimeSpan.FromSeconds(-5));
 				break;
 		}
 	}
@@ -87,10 +87,10 @@ public partial class MainWindow : Window
 		switch (e.Delta.Y)
 		{
 			case > 0:
-				vm.Volume += 5;
+				vm.Volume += .05f;
 				break;
 			case < 0:
-				vm.Volume -= 5;
+				vm.Volume -= .05f;
 				break;
 		}
 	}

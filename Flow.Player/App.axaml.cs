@@ -1,22 +1,21 @@
-using System;
 using Avalonia;
 using Avalonia.Controls.ApplicationLifetimes;
 using Avalonia.Data.Core.Plugins;
 using System.Linq;
 using Avalonia.Markup.Xaml;
 using Flow.Player.Services;
+using Flow.Player.Services.MediaPlayerService;
 using Flow.Player.ViewModels;
 using Flow.Player.Views;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.DependencyInjection.Extensions;
 
 namespace Flow.Player;
 
 public partial class App : Application
 {
-	public static ServiceProvider Services { get; private set; }
-	public static ServiceProvider AppServices { get; private set; }
-	
+	public static ServiceProvider Services { get; private set; } = null!;
+	public static ServiceProvider AppServices { get; private set; } = null!;
+
 	public override void Initialize()
 	{
 		AvaloniaXamlLoader.Load(this);
@@ -32,8 +31,8 @@ public partial class App : Application
 			desktop.Exit += OnExit;
 			DisableAvaloniaDataAnnotationValidation();
 			ServiceCollection appServices = new();
-			appServices.AddSingleton<IMediaPlayerService, MediaPlayerService>();
-			appServices.AddSingleton<CommandLineArgumentsService>(_ => new(desktop.Args));
+			appServices.AddSingleton<IMediaPlayerService, SoundFlowMediaPlayerService>();
+			appServices.AddSingleton<CommandLineArgumentsService>(_ => new(desktop.Args ?? []));
 			appServices.AddSingleton<UpdateManagerService>();
 			appServices.AddSingleton<PlayerViewModel>();
 			appServices.AddSingleton<PlaylistViewModel>();

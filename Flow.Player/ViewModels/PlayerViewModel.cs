@@ -1,13 +1,16 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
+using Avalonia.Threading;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using CommunityToolkit.Mvvm.Messaging;
 using Flow.Player.Messages;
 using Flow.Player.Models;
 using Flow.Player.Services;
+using Flow.Player.Services.MediaPlayerService;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace Flow.Player.ViewModels;
@@ -16,10 +19,11 @@ public partial class PlayerViewModel : ViewModelBase
 {
 	public bool IsSeeking { get; set; }
 	[ObservableProperty] private Track? _playingTrack;
-	[ObservableProperty] private long _duration;
-	[ObservableProperty] private long _time;
-	private long _sliderTime;
-	public long SliderTime
+	[ObservableProperty] private TimeSpan _duration;
+	[ObservableProperty] private TimeSpan _time;
+	[ObservableProperty] private float _sliderDuration;
+	private float _sliderTime;
+	public float SliderTime
 	{
 		get => _sliderTime;
 		set
@@ -30,13 +34,13 @@ public partial class PlayerViewModel : ViewModelBase
 			SetProperty(ref _sliderTime, value);
 		}
 	}
-	private int _volume = 80;
-	public int Volume
+	private float _volume = 1;
+	public float Volume
 	{
 		get => _volume;
 		set
 		{
-			int v = Math.Clamp(value, 0, 100);
+			float v = Math.Clamp(value, 0, 1);
 			_player.SetMute(false);
 			_player.Volume = v;
 			Muted = false;
@@ -61,7 +65,7 @@ public partial class PlayerViewModel : ViewModelBase
 	
 
 	[ObservableProperty] private bool _muted;
-	private readonly IMediaPlayerService _player;
+	private readonly IMediaPlayerService _player = null!;
 
 	public PlayerViewModel()
 	{
@@ -85,36 +89,43 @@ public partial class PlayerViewModel : ViewModelBase
 	{
 		PlayingTrack = new(filePath);
 		await _player.LoadFile(filePath);
-		Volume = _player.Volume;
-		Duration = _player.GetDuration();
-		_player.SetTimeCallback((_, args) => { 
-			Time = args.Time;
-			SliderTime = args.Time;
-		});
+		_player.Volume = Volume;
+		
+		Duration = TimeSpan.FromSeconds(_player.Duration);
+		SliderDuration = _player.Duration;
+		DispatcherTimer timer = new()
+		{
+			Interval = TimeSpan.FromMilliseconds(100)
+		};
+		timer.Tick += (_, _) => UpdateTimers();
+		timer.Start();
+
 		IsPlaying = true;
 		OnPropertyChanged(nameof(SliderTime));
 		OnPropertyChanged(nameof(PlayingTrack));
 	}
-	
+
+	private void UpdateTimers()
+	{
+		Time = TimeSpan.FromSeconds(_player.Time);
+		SliderTime = _player.Time;
+	}
 	
 	[RelayCommand]
 	public void ToggleMute() => _player.SetMute(Muted);
-	
-	
-	public void SeekTo(long value) => _player.Time = value;
-	
-	/// <summary>
-	/// Seeks by defined amount of seconds
-	/// </summary>
-	/// <param name="value">Time in seconds</param>
-	public void Seek(long value) => _player.Time += value * 1000;
+
+	public void Seek(TimeSpan value, SeekOrigin origin = SeekOrigin.Current)
+	{
+		_player.Seek(value, origin);
+		UpdateTimers();
+	}
 	
 
 	[RelayCommand]
 	private void PlayPrevious()
 	{
 		// TODO: Implement logic for playlist support
-		SeekTo(0);
+		Seek(TimeSpan.FromSeconds(0), SeekOrigin.Begin);
 		OnPropertyChanged(nameof(SliderTime));
 	}
 	

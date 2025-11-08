@@ -1,4 +1,5 @@
 ﻿using System;
+using System.IO;
 using Avalonia.Controls;
 using Avalonia.Input;
 using Avalonia.Interactivity;
@@ -51,6 +52,6 @@ public partial class PlayerView : UserControl
 			return;
 
 		vm.IsSeeking = false;
-		vm.SeekTo((long)_slider.Value);
+		vm.Seek(TimeSpan.FromSeconds(_slider.Value), SeekOrigin.Begin);
 	}
 }
