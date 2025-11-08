@@ -1,22 +1,16 @@
 ﻿using System;
 using System.Collections.ObjectModel;
 using System.Linq;
+using Flow.Player.Services.MediaPlayerService;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace Flow.Player.ViewModels.Settings;
 
-public class FlatAudioOutputDevice(string id, string name, bool isGroup)
-{
-	public string Id { get; set; } = id;
-	public string Name { get; set; } = name;
-	public bool IsGroup { get; set; } = isGroup;
-}
-
 public class PlaybackViewModel : ViewModelBase
 {
-	public ObservableCollection<FlatAudioOutputDevice> AudioOutputDevices { get; } = [];
-	private FlatAudioOutputDevice _selectedDevice;
-	public FlatAudioOutputDevice SelectedDevice
+	public ObservableCollection<AudioOutputDevice> AudioOutputDevices { get; }
+	private AudioOutputDevice _selectedDevice;
+	public AudioOutputDevice SelectedDevice
 	{
 		get => _selectedDevice;
 		set
@@ -24,7 +18,7 @@ public class PlaybackViewModel : ViewModelBase
 			_mediaPlayerService.Pause();
 			_mediaPlayerService.SetOutputDevice(value.Id);
 			_mediaPlayerService.Play();
-			
+
 			SetProperty(ref _selectedDevice, value);
 		}
 	}
@@ -33,14 +27,9 @@ public class PlaybackViewModel : ViewModelBase
 	public PlaybackViewModel()
 	{
 		_mediaPlayerService = App.AppServices.GetRequiredService<IMediaPlayerService>();
-		foreach (AudioOutputGroup group in _mediaPlayerService.AudioOutputGroups)
-		{
-			AudioOutputDevices.Add(new(group.Id, group.Name, true));
-			foreach (AudioOutputDevice device in group.Devices)
-			{
-				AudioOutputDevices.Add(new(device.Id, device.Name, false));
-			}
-		}
+		AudioOutputDevices = new(_mediaPlayerService.AudioOutputDevices.Select(device => device.Group is null ? new AudioOutputDevice($"{device.Name}", device.Id) : new AudioOutputDevice($"{device.Name} ({device.Group})", device.Id)));
+		
+		
 		_selectedDevice = _mediaPlayerService.CurrentOutputDeviceId is not null
 			? AudioOutputDevices.First(x => x.Id == _mediaPlayerService.CurrentOutputDeviceId)
 			: AudioOutputDevices.First(x =>

@@ -4,6 +4,7 @@ using Avalonia.Data.Core.Plugins;
 using System.Linq;
 using Avalonia.Markup.Xaml;
 using Flow.Player.Services;
+using Flow.Player.Services.MediaPlayerService;
 using Flow.Player.ViewModels;
 using Flow.Player.Views;
 using Microsoft.Extensions.DependencyInjection;

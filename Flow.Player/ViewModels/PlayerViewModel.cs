@@ -6,6 +6,7 @@ using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using Flow.Player.Models;
 using Flow.Player.Services;
+using Flow.Player.Services.MediaPlayerService;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace Flow.Player.ViewModels;

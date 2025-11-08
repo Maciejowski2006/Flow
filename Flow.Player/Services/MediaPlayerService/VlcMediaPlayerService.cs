@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 using LibVLCSharp.Shared;
 using LibVLCSharp.Shared.Structures;
 
-namespace Flow.Player.Services;
+namespace Flow.Player.Services.MediaPlayerService;
 
 public class VlcMediaPlayerService : IMediaPlayerService, IDisposable
 {
@@ -36,23 +36,20 @@ public class VlcMediaPlayerService : IMediaPlayerService, IDisposable
 			_mediaPlayer.Volume = value;
 		}
 	}
-	public List<AudioOutputGroup> AudioOutputGroups
+	public List<AudioOutputDevice> AudioOutputDevices
 	{
 		get
 		{
-			List<AudioOutputGroup> outputGroups = [];
+			List<AudioOutputDevice> outputDevices = [];
 			AudioOutputDescription[] audioGroups = _libVlc.AudioOutputs;
 
 			foreach (AudioOutputDescription group in audioGroups)
 			{
 				LibVLCSharp.Shared.Structures.AudioOutputDevice[] devices = _libVlc.AudioOutputDevices(group.Name);
-				List<AudioOutputDevice> deviceIter = devices.Select(dev => new AudioOutputDevice(dev.Description, dev.DeviceIdentifier)).ToList();
-				if (deviceIter.Count == 0)
-					continue;
-				outputGroups.Add(new(group.Name, group.Description, deviceIter));
+				outputDevices.AddRange(devices.Select(audioOutputDevice => new AudioOutputDevice(audioOutputDevice.Description, audioOutputDevice.DeviceIdentifier, group.Description)));
 			}
 			
-			return outputGroups;
+			return outputDevices;
 		}
 	}
 	public string? CurrentOutputDeviceId => _mediaPlayer?.OutputDevice;
