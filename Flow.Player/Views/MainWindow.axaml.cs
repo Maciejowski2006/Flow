@@ -76,10 +76,10 @@ public partial class MainWindow : Window
 		switch (e.Delta.Y)
 		{
 			case > 0:
-				vm.Volume += 5;
+				vm.Volume += .05f;
 				break;
 			case < 0:
-				vm.Volume -= 5;
+				vm.Volume -= .05f;
 				break;
 		}
 	}
