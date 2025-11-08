@@ -57,7 +57,7 @@ public partial class PlayerViewModel() : ViewModelBase
 	}
 
 	[ObservableProperty] private bool _muted;
-	private readonly IMediaPlayerService _player;
+	private readonly IMediaPlayerService _player = null!;
 
 	public PlayerViewModel(IMediaPlayerService playerService, CommandLineArgumentsService commandLineArgumentsService) : this()
 	{

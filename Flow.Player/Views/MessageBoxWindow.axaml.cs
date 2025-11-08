@@ -4,9 +4,9 @@ using Flow.Player.Messages;
 
 namespace Flow.Player.Views;
 
-public partial class MessageBoxWindow : Window
+public partial class MessageBoxWindow() : Window
 {
-	public MessageBoxWindow(string message, MessageBoxButtons buttons)
+	public MessageBoxWindow(string message, MessageBoxButtons buttons) : this()
 	{
 		InitializeComponent();
 
