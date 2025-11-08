@@ -4,6 +4,7 @@ using Avalonia.Data.Core.Plugins;
 using System.Linq;
 using Avalonia.Markup.Xaml;
 using Flow.Player.Services;
+using Flow.Player.Services.MediaPlayerService;
 using Flow.Player.ViewModels;
 using Flow.Player.Views;
 using Microsoft.Extensions.DependencyInjection;
@@ -30,7 +31,7 @@ public partial class App : Application
 			desktop.Exit += OnExit;
 			DisableAvaloniaDataAnnotationValidation();
 			ServiceCollection appServices = new();
-			appServices.AddSingleton<IMediaPlayerService, VlcMediaPlayerService>();
+			appServices.AddSingleton<IMediaPlayerService, SoundFlowMediaPlayerService>();
 			appServices.AddSingleton<CommandLineArgumentsService>(_ => new(desktop.Args ?? []));
 			appServices.AddSingleton<UpdateManagerService>();
 			appServices.AddSingleton<PlayerViewModel>();

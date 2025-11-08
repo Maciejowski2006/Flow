@@ -1,7 +1,5 @@
 ﻿using Avalonia;
 using System;
-using Avalonia.Controls.Shapes;
-using Avalonia.Logging;
 using Microsoft.Win32;
 using Serilog;
 using Velopack;

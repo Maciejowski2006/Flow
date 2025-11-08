@@ -1,4 +1,5 @@
-﻿using System.Threading.Tasks;
+﻿using System;
+using System.Threading.Tasks;
 using Avalonia.Platform.Storage;
 using CommunityToolkit.Mvvm.Input;
 using CommunityToolkit.Mvvm.Messaging;
@@ -83,7 +84,7 @@ public partial class MainWindowViewModel() : ViewModelBase
 	}
 
 	[RelayCommand]
-	private void SeekBack() => _pvm.Seek(-5);
+	private void SeekBack() => _pvm.Seek(TimeSpan.FromSeconds(-5));
 	[RelayCommand]
-	private void SeekForward() => _pvm.Seek(5);
+	private void SeekForward() => _pvm.Seek(TimeSpan.FromSeconds(5));
 }
