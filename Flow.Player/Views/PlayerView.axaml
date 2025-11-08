@@ -47,12 +47,12 @@
 			<Grid DockPanel.Dock="Bottom" VerticalAlignment="Bottom" HorizontalAlignment="Stretch" ColumnDefinitions="Auto, *" RowDefinitions="Auto, *" ColumnSpacing="16">
 				<StackPanel Grid.ColumnSpan="2" HorizontalAlignment="Stretch">
 					<DockPanel HorizontalAlignment="Stretch">
-						<TextBlock DockPanel.Dock="Left" Text="{Binding Time, Converter={StaticResource LongConverter}}" />
-						<TextBlock DockPanel.Dock="Right" TextAlignment="Right" Text="{Binding Duration, Converter={StaticResource LongConverter}}" />
+						<TextBlock DockPanel.Dock="Left" Text="{Binding Time, Converter={StaticResource TimeSpanConverter}}" />
+						<TextBlock DockPanel.Dock="Right" TextAlignment="Right" Text="{Binding Duration, Converter={StaticResource TimeSpanConverter}}" />
 					</DockPanel>
 					<Slider
 						Minimum="0"
-						Maximum="{Binding Duration}"
+						Maximum="{Binding SliderDuration}"
 						Value="{Binding SliderTime, Mode=OneWay}"
 						IsSnapToTickEnabled="False"
 						x:Name="SeekSlider"
@@ -78,7 +78,7 @@
 					<ToggleButton Command="{Binding ToggleMuteCommand}" IsChecked="{Binding Muted}">
 						<iconPacks:PackIconLucide Kind="VolumeOff" HorizontalAlignment="Center" VerticalAlignment="Center" Padding="2" />
 					</ToggleButton>
-					<Slider Grid.Column="1" Maximum="100" Value="{Binding Volume}" />
+					<Slider Grid.Column="1" Maximum="1" Value="{Binding Volume}" />
 				</Grid>
 			</Grid>
 		</DockPanel>
