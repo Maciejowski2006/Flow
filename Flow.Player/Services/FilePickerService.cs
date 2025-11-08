@@ -17,6 +17,16 @@ public class FilePickerService(Window target) : IFilePickerService
 		});
 		return files.Count >= 1 ? files[0] : null;
 	}
+	public async Task<IReadOnlyList<IStorageFile>> OpenFilesAsync()
+	{
+		IReadOnlyList<IStorageFile> files = await target.StorageProvider.OpenFilePickerAsync(new()
+		{
+			Title = "Open file",
+			AllowMultiple = true,
+			FileTypeFilter = [AudioAll]
+		});
+		return files;
+	}
 
 	public static FilePickerFileType AudioAll { get; } = new("All audio files")
 	{
