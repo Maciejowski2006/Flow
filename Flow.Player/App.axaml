@@ -17,5 +17,6 @@
 	<Application.Styles>
 		<FluentTheme />
 		<StyleInclude Source="avares://IconPacks.Avalonia.Lucide/Lucide.axaml" />
+		<StyleInclude Source="avares://Avalonia.Controls.TreeDataGrid/Themes/Fluent.axaml"/>
 	</Application.Styles>
 </Application>

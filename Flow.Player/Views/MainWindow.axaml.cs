@@ -12,6 +12,7 @@ namespace Flow.Player.Views;
 
 public partial class MainWindow : Window
 {
+	private bool _isInPlaylistView;
 	private readonly MainWindowViewModel _viewModel = new();
 	public MainWindow()
 	{
@@ -22,6 +23,13 @@ public partial class MainWindow : Window
 		{
 			MessageBoxWindow dialog = new(m.Message, m.Buttons);
 			m.Reply(dialog.ShowDialog<MessageBoxReturn?>(w));
+		});
+		WeakReferenceMessenger.Default.Register<MainWindow, PlaylistViewChangedMessage>(this, (window, m) =>
+		{
+			window.Height += m.Value ? 390 : -390;
+			window.MinHeight += m.Value ? 390 : -390;
+			Grid.RowDefinitions[1].Height = m.Value ? new(1, GridUnitType.Auto) : new(1, GridUnitType.Star);
+			Grid.RowDefinitions[2].Height = m.Value ? new(1, GridUnitType.Star) : new(1, GridUnitType.Auto);
 		});
 	}
 	protected override void OnLoaded(RoutedEventArgs e)
@@ -71,6 +79,9 @@ public partial class MainWindow : Window
 	}
 	private void VolumeSliderScroll(object? sender, PointerWheelEventArgs e)
 	{
+		if (_isInPlaylistView)
+			return;
+		
 		PlayerViewModel vm = App.AppServices.GetRequiredService<PlayerViewModel>();
 
 		switch (e.Delta.Y)
@@ -83,6 +94,10 @@ public partial class MainWindow : Window
 				break;
 		}
 	}
+	private void EnteredPlaylistView(object? sender, PointerEventArgs e) => _isInPlaylistView = true;
+	
+	private void ExitedPlaylistView(object? sender, PointerEventArgs e) => _isInPlaylistView = false;
+	
 	private void Exit_Click(object? sender, RoutedEventArgs e)
 	{
 		Close();

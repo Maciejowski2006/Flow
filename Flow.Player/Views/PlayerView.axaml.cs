@@ -3,6 +3,8 @@ using System.IO;
 using Avalonia.Controls;
 using Avalonia.Input;
 using Avalonia.Interactivity;
+using CommunityToolkit.Mvvm.Messaging;
+using Flow.Player.Messages;
 using Flow.Player.ViewModels;
 using Microsoft.Extensions.DependencyInjection;
 

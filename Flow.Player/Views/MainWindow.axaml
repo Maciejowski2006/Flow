@@ -30,7 +30,7 @@
 	</Window.KeyBindings>
 
 	<local:BlurView>
-		<Grid RowDefinitions="30, *">
+		<Grid RowDefinitions="30, *, Auto" x:Name="Grid">
 			<Menu VerticalAlignment="Center" PointerPressed="InputElement_OnPointerPressed">
 				<MenuItem Header="_Flow">
 					<MenuItem Header="_Open file" Command="{Binding OpenFileCommand}" InputGesture="Ctrl+O" />
@@ -53,10 +53,12 @@
 					<MenuItem Header="_Mute" InputGesture="Ctrl+M" Command="{Binding ToggleMuteCommand}" />
 				</MenuItem>
 				<MenuItem Header="_View">
-					<MenuItem Header="_Playlist view" InputGesture="Ctrl+P" />
+					<MenuItem Header="_Playlist view" InputGesture="Ctrl+P" Command="{Binding TogglePlaylistViewCommand}" />
 				</MenuItem>
 			</Menu>
-			<local:PlayerView Grid.Row="1"></local:PlayerView>
+			<local:PlayerView Grid.Row="1" />
+			
+			<local:PlaylistView Grid.Row="2" PointerEntered="EnteredPlaylistView" PointerExited="ExitedPlaylistView" IsVisible="{Binding $parent.DataContext.ShowPlaylistView}" />
 		</Grid>
 	</local:BlurView>
 </Window>
