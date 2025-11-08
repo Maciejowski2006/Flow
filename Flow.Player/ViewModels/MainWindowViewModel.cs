@@ -1,5 +1,7 @@
 ﻿using System.Threading.Tasks;
+using Avalonia.Controls;
 using Avalonia.Platform.Storage;
+using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using CommunityToolkit.Mvvm.Messaging;
 using Flow.Player.Messages;
@@ -11,9 +13,15 @@ using Velopack;
 
 namespace Flow.Player.ViewModels;
 
-public partial class MainWindowViewModel() : ViewModelBase
+public partial class MainWindowViewModel : ViewModelBase
 {
 	private readonly PlayerViewModel _pvm = App.AppServices.GetRequiredService<PlayerViewModel>();
+	[ObservableProperty] private bool _showPlaylistView;
+
+	public MainWindowViewModel()
+	{
+		WeakReferenceMessenger.Default.Register<PlaylistViewChangedMessage>(this, (_, message) => ShowPlaylistView = message.Value);
+	}
 	
 
 	[RelayCommand]
@@ -86,4 +94,11 @@ public partial class MainWindowViewModel() : ViewModelBase
 	private void SeekBack() => _pvm.Seek(-5);
 	[RelayCommand]
 	private void SeekForward() => _pvm.Seek(5);
+
+	[RelayCommand]
+	private void TogglePlaylistView()
+	{
+		ShowPlaylistView = !ShowPlaylistView;
+		WeakReferenceMessenger.Default.Send(new PlaylistViewChangedMessage(ShowPlaylistView));
+	}
 }

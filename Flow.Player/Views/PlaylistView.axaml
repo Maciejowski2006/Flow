@@ -1,0 +1,47 @@
+﻿<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:vm="using:Flow.Player.ViewModels"
+             xmlns:iconPacks="using:IconPacks.Avalonia.Lucide"
+             mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="300" MaxHeight="1000" MinHeight="300"
+             x:Class="Flow.Player.Views.PlaylistView"
+             x:DataType="vm:PlaylistViewModel">
+	<Border Padding="16" ClipToBounds="True" CornerRadius="16">
+		<DockPanel VerticalSpacing="4">
+			<StackPanel DockPanel.Dock="Top" Orientation="Horizontal">
+				<Button IsEnabled="{Binding SelectedTrack, Converter={x:Static ObjectConverters.IsNotNull}}">
+					<iconPacks:PackIconLucide Kind="Play" Padding="2"></iconPacks:PackIconLucide>
+				</Button>
+				<Button ToolTip.Tip="Deselects element" Command="{Binding DeselectItemCommand}" Margin="0 0 8 0"
+				        IsEnabled="{Binding SelectedTrack, Converter={x:Static ObjectConverters.IsNotNull}}">
+					<iconPacks:PackIconLucide Kind="MousePointerBan" Padding="2" />
+				</Button>
+
+				<Button Command="{Binding AddTrackCommand}">
+					<iconPacks:PackIconLucide Kind="Plus" Padding="2"></iconPacks:PackIconLucide>
+				</Button>
+				<Button IsEnabled="{Binding SelectedTrack, Converter={x:Static ObjectConverters.IsNotNull}}" Margin="0 0 8 0" Command="{Binding RemoveSelectedTrackCommand}">
+					<iconPacks:PackIconLucide Kind="Minus" Padding="2"></iconPacks:PackIconLucide>
+				</Button>
+
+				<Button>
+					<iconPacks:PackIconLucide Kind="Folder" Padding="2"></iconPacks:PackIconLucide>
+				</Button>
+				<Button ToolTip.Tip="Save">
+					<iconPacks:PackIconLucide Kind="Save" Padding="2"></iconPacks:PackIconLucide>
+				</Button>
+				<Button ToolTip.Tip="Save as">
+					<iconPacks:PackIconLucide Kind="SaveAll" Padding="2"></iconPacks:PackIconLucide>
+				</Button>
+			</StackPanel>
+			<TreeDataGrid Source="{Binding PlaylistSource}" MinHeight="100" AutoDragDropRows="True" CanUserSortColumns="False">
+				<TreeDataGrid.Styles>
+					<Style Selector="TreeDataGridRow">
+						<Setter Property="Cursor" Value="SizeAll" />
+					</Style>
+				</TreeDataGrid.Styles>
+			</TreeDataGrid>
+		</DockPanel>
+	</Border>
+</UserControl>

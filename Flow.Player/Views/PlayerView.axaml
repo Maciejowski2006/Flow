@@ -61,6 +61,9 @@
 				</StackPanel>
 
 				<StackPanel Grid.Row="1" Grid.Column="0" Orientation="Horizontal" Spacing="2">
+					<ToggleButton IsChecked="{Binding ShowPlaylistView, Mode=OneWay}" Command="{Binding TogglePlaylistViewCommand}" Margin="0 0 8 0">
+						<iconPacks:PackIconLucide Kind="ListMusic" HorizontalAlignment="Center" VerticalAlignment="Center" Padding="2" />
+					</ToggleButton>
 					<Button Command="{Binding PlayPreviousCommand}">
 						<iconPacks:PackIconLucide Kind="ArrowLeftToLine" HorizontalAlignment="Center" VerticalAlignment="Center" Padding="2" />
 					</Button>

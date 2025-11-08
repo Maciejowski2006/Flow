@@ -36,6 +36,7 @@ public partial class App : Application
 			appServices.AddSingleton<CommandLineArgumentsService>(_ => new(desktop.Args));
 			appServices.AddSingleton<UpdateManagerService>();
 			appServices.AddSingleton<PlayerViewModel>();
+			appServices.AddSingleton<PlaylistViewModel>();
 			appServices.AddSingleton<MainWindowViewModel>();
 			
 			AppServices = appServices.BuildServiceProvider();

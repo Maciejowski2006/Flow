@@ -4,13 +4,15 @@ using System.Linq;
 using System.Threading.Tasks;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
+using CommunityToolkit.Mvvm.Messaging;
+using Flow.Player.Messages;
 using Flow.Player.Models;
 using Flow.Player.Services;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace Flow.Player.ViewModels;
 
-public partial class PlayerViewModel() : ViewModelBase
+public partial class PlayerViewModel : ViewModelBase
 {
 	public bool IsSeeking { get; set; }
 	[ObservableProperty] private Track? _playingTrack;
@@ -55,10 +57,17 @@ public partial class PlayerViewModel() : ViewModelBase
 			SetProperty(ref _isPlaying, value);
 		}
 	}
+	[ObservableProperty] private bool _showPlaylistView;
+	
 
 	[ObservableProperty] private bool _muted;
 	private readonly IMediaPlayerService _player;
 
+	public PlayerViewModel()
+	{
+		WeakReferenceMessenger.Default.Register<PlaylistViewChangedMessage>(this, (_, message) => ShowPlaylistView = message.Value);
+	}
+	
 	public PlayerViewModel(IMediaPlayerService playerService, CommandLineArgumentsService commandLineArgumentsService) : this()
 	{
 		_player = playerService;
@@ -107,5 +116,12 @@ public partial class PlayerViewModel() : ViewModelBase
 		// TODO: Implement logic for playlist support
 		SeekTo(0);
 		OnPropertyChanged(nameof(SliderTime));
+	}
+	
+	[RelayCommand]
+	private void TogglePlaylistView()
+	{
+		ShowPlaylistView = !ShowPlaylistView;
+		WeakReferenceMessenger.Default.Send(new PlaylistViewChangedMessage(ShowPlaylistView));
 	}
 }
