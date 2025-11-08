@@ -7,9 +7,7 @@ using LibVLCSharp.Shared.Structures;
 
 namespace Flow.Player.Services;
 
-
-
-public class MediaPlayerService : IMediaPlayerService, IDisposable
+public class VlcMediaPlayerService : IMediaPlayerService, IDisposable
 {
 	private readonly LibVLC _libVlc = new();
 	private Media? _media;
@@ -17,7 +15,7 @@ public class MediaPlayerService : IMediaPlayerService, IDisposable
 
 	private int _unmutedVolume;
 
-	public MediaPlayerService() { Core.Initialize(); }
+	public VlcMediaPlayerService() { Core.Initialize(); }
 
 	public bool IsPlaying => _mediaPlayer?.IsPlaying ?? false;
 	public long Time
