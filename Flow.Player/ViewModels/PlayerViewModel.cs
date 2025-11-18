@@ -22,43 +22,40 @@ public partial class PlayerViewModel : ViewModelBase
 	[ObservableProperty] private TimeSpan _duration;
 	[ObservableProperty] private TimeSpan _time;
 	[ObservableProperty] private float _sliderDuration;
-	private float _sliderTime;
 	public float SliderTime
 	{
-		get => _sliderTime;
+		get;
 		set
 		{
 			if (IsSeeking)
 				return;
-			
-			SetProperty(ref _sliderTime, value);
+
+			SetProperty(ref field, value);
 		}
 	}
-	private float _volume = 1;
 	public float Volume
 	{
-		get => _volume;
+		get;
 		set
 		{
 			float v = Math.Clamp(value, 0, 1);
 			_player.SetMute(false);
 			_player.Volume = v;
 			Muted = false;
-			SetProperty(ref _volume, v);
+			SetProperty(ref field, v);
 		}
-	}
-	private bool _isPlaying;
+	} = 1;
 	public bool IsPlaying
 	{
-		get => _isPlaying;
+		get;
 		set
 		{
 			if (value)
 				_player.Play();
 			else
 				_player.Pause();
-			
-			SetProperty(ref _isPlaying, value);
+
+			SetProperty(ref field, value);
 		}
 	}
 	[ObservableProperty] private bool _showPlaylistView;
