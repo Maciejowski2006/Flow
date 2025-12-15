@@ -1,5 +1,4 @@
 ﻿using System.Collections.Generic;
-using System.Collections.ObjectModel;
 using System.Threading.Tasks;
 using Avalonia.Controls;
 using Avalonia.Controls.Models.TreeDataGrid;
@@ -9,7 +8,9 @@ using Avalonia.Platform.Storage;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using Flow.Player.Models;
-using Flow.Player.Services.MediaPlayerService;
+using Flow.Player.Services.AudioEngineService;
+using Flow.Player.Services.PlaybackSubsystem;
+using Flow.Player.Services.PlaylistSerializer;
 using IconPacks.Avalonia.Lucide;
 using Microsoft.Extensions.DependencyInjection;
 
@@ -18,23 +19,22 @@ namespace Flow.Player.ViewModels;
 public partial class PlaylistViewModel : ViewModelBase
 {
 	[ObservableProperty] private Track? _selectedTrack;
-	private ObservableCollection<Track> _tracks;
 	public FlatTreeDataGridSource<Track> PlaylistSource { get; }
+	public bool IsPlaylistSelected => _playlistPath is not null;
+	
+	private string? _playlistPath { get; set; }
 
-	private IFilePickerService _filePickerService { get; set; }
-	private readonly IMediaPlayerService _mediaPlayerService;
+	private readonly IAudioEngineService _audioEngineService;
+	private readonly IPlaybackSubsystem _playbackSubsystem;
+	private readonly IPlaylistSerializer _playbackSerializer;
 
-	public PlaylistViewModel(IMediaPlayerService mediaPlayer)
+	public PlaylistViewModel(IAudioEngineService audioEngine, IPlaybackSubsystem playbackSubsystem, IPlaylistSerializer playbackSerializer)
 	{
-		_mediaPlayerService = mediaPlayer;
-		_tracks =
-		[
-			// Mock data TODO: Remove
-			new(@"C:\Users\Maciej\Downloads\Linksy @ Furality Umbra 2024.flac"),
-			new(@"C:\Users\Maciej\Music\ValueFactory Sets\ValueFactory @ Furality Umbra 2024.flac"),
-			new(@"C:\Users\Maciej\Music\ValueFactory Sets\ValueFactory @ ZRave 2023-08-12.mp3"),
-		];
-		PlaylistSource = new(_tracks)
+		_audioEngineService = audioEngine;
+		_playbackSubsystem = playbackSubsystem;
+		_playbackSerializer = playbackSerializer;
+
+		PlaylistSource = new(_playbackSubsystem.Playlist)
 		{
 			Columns =
 			{
@@ -78,24 +78,72 @@ public partial class PlaylistViewModel : ViewModelBase
 			};
 		}
 	}
-	
-	public void Setup() { _filePickerService = App.Services.GetRequiredService<IFilePickerService>(); }
+
+	[RelayCommand]
+	private async Task PlaySelectedTrack()
+	{
+		if (SelectedTrack is null)
+			return;
+		await _playbackSubsystem.PlayTrackFromPlaylistAsync(SelectedTrack);
+	}
 
 	[RelayCommand]
 	private async Task AddTrack()
 	{
-		IReadOnlyList<IStorageFile> files = await _filePickerService.OpenFilesAsync();
+		IReadOnlyList<IStorageFile> files = await App.Services.GetRequiredService<IFilePickerService>().OpenFilesAsync("Add songs to playlist", FilePickerService.AudioAll);
 		foreach (IStorageFile file in files)
 		{
-			_tracks.Add(new(file.Path.LocalPath));
+			_playbackSubsystem.Playlist.Add(new(file.Path.LocalPath));
 		}
 	}
 	[RelayCommand]
 	private void RemoveSelectedTrack()
 	{
 		if (SelectedTrack is not null)
-			_tracks.Remove(SelectedTrack);
+			_playbackSubsystem.Playlist.Remove(SelectedTrack);
 	}
 	[RelayCommand]
 	private void DeselectItem() => PlaylistSource.RowSelection?.Clear();
+
+	[RelayCommand]
+	private async Task OpenPlaylist()
+	{
+		IStorageFile? file = await App.Services.GetRequiredService<IFilePickerService>().OpenFileAsync("Open playlist", FilePickerService.Json);
+		if (file is null)
+			return;
+		
+		_playbackSubsystem.Playlist.Clear();
+		
+		IReadOnlyList<Track>? playlist =  await _playbackSerializer.DeserializeAsync(file.Path.LocalPath);
+		if (playlist is null)
+			return;
+		
+		_playlistPath = file.Path.LocalPath;
+		OnPropertyChanged(nameof(IsPlaylistSelected));
+		foreach (Track track in playlist)
+		{
+			_playbackSubsystem.Playlist.Add(track);
+		}
+	}
+
+	[RelayCommand]
+	private async Task SavePlaylist()
+	{
+		if (_playlistPath is null)
+			return;
+		
+		await _playbackSerializer.SerializeAsync(_playbackSubsystem.Playlist, _playlistPath);
+	}
+	
+	[RelayCommand]
+	private async Task SavePlaylistAs()
+	{
+		IStorageFile? file = await App.Services.GetRequiredService<IFilePickerService>().SaveFileAsync("Save playlist as", FilePickerService.Json);
+		if (file is null)
+			return;
+		
+		await _playbackSerializer.SerializeAsync(_playbackSubsystem.Playlist, file.Path.LocalPath);
+		_playlistPath = file.Path.LocalPath;
+		OnPropertyChanged(nameof(IsPlaylistSelected));
+	}
 }

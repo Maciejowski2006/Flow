@@ -1,6 +1,6 @@
 ﻿using System.Collections.ObjectModel;
 using System.Linq;
-using Flow.Player.Services.MediaPlayerService;
+using Flow.Player.Services.AudioEngineService;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace Flow.Player.ViewModels.Settings;
@@ -14,18 +14,17 @@ public class PlaybackViewModel : ViewModelBase
 		get => _selectedDevice;
 		set
 		{
-			_mediaPlayerService.SetOutputDevice(value.Id);
-
+			_audioEngineService.SetOutputDevice(value.Id);
 			SetProperty(ref _selectedDevice, value);
 		}
 	}
 
-	private readonly IMediaPlayerService _mediaPlayerService;
+	private readonly IAudioEngineService _audioEngineService;
 	public PlaybackViewModel()
 	{
-		_mediaPlayerService = App.AppServices.GetRequiredService<IMediaPlayerService>();
-		AudioOutputDevices = new(_mediaPlayerService.AudioOutputDevices.Select(device => device.Group is null ? new AudioOutputDevice($"{device.Name}", device.Id) : new AudioOutputDevice($"{device.Name} ({device.Group})", device.Id)));
+		_audioEngineService = App.AppServices.GetRequiredService<IAudioEngineService>();
+		AudioOutputDevices = new(_audioEngineService.AudioOutputDevices.Select(device => device.Group is null ? new AudioOutputDevice($"{device.Name}", device.Id) : new AudioOutputDevice($"{device.Name} ({device.Group})", device.Id)));
 
-		_selectedDevice = _mediaPlayerService.CurrentOutputDevice;
+		_selectedDevice = _audioEngineService.CurrentOutputDevice;
 	}
 }

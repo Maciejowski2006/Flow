@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using Avalonia.Media.Imaging;
@@ -8,12 +7,8 @@ using File = TagLib.File;
 
 namespace Flow.Player.Models;
 
-
-
 public class Track
 {
-	
-	
 	public string Title { get; set; }
 	public string Artist { get; set; }
 	public string Album { get; set; }
@@ -22,9 +17,11 @@ public class Track
 	public uint TrackNumber { get; set; }
 	public Bitmap? CoverArt { get; set; }
 	public bool DoesHaveCover => CoverArt is not null;
-
+	public string FilePath { get; set; }
+	
 	public Track(string path)
 	{
+		FilePath = path;
 		FileInfo trackFile = new(path);
 		File? id3 = File.Create(trackFile.FullName);
 		Title = string.IsNullOrEmpty(id3.Tag.Title) ? trackFile.Name : id3.Tag.Title;

@@ -3,6 +3,7 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:vm="using:Flow.Player.ViewModels"
+             xmlns:m="using:Flow.Player.Models"
              xmlns:iconPacks="using:IconPacks.Avalonia.Lucide"
              mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="300" MaxHeight="1000" MinHeight="300"
              x:Class="Flow.Player.Views.PlaylistView"
@@ -10,7 +11,7 @@
 	<Border Padding="16" ClipToBounds="True" CornerRadius="16">
 		<DockPanel VerticalSpacing="4">
 			<StackPanel DockPanel.Dock="Top" Orientation="Horizontal">
-				<Button IsEnabled="{Binding SelectedTrack, Converter={x:Static ObjectConverters.IsNotNull}}">
+				<Button Command="{Binding PlaySelectedTrackCommand}" IsEnabled="{Binding SelectedTrack, Converter={x:Static ObjectConverters.IsNotNull}}">
 					<iconPacks:PackIconLucide Kind="Play" Padding="2"></iconPacks:PackIconLucide>
 				</Button>
 				<Button ToolTip.Tip="Deselects element" Command="{Binding DeselectItemCommand}" Margin="0 0 8 0"
@@ -25,13 +26,13 @@
 					<iconPacks:PackIconLucide Kind="Minus" Padding="2"></iconPacks:PackIconLucide>
 				</Button>
 
-				<Button>
+				<Button Command="{Binding OpenPlaylistCommand}">
 					<iconPacks:PackIconLucide Kind="Folder" Padding="2"></iconPacks:PackIconLucide>
 				</Button>
-				<Button ToolTip.Tip="Save">
+				<Button ToolTip.Tip="Save" Command="{Binding SavePlaylistCommand}" IsEnabled="{Binding IsPlaylistSelected}">
 					<iconPacks:PackIconLucide Kind="Save" Padding="2"></iconPacks:PackIconLucide>
 				</Button>
-				<Button ToolTip.Tip="Save as">
+				<Button ToolTip.Tip="Save as" Command="{Binding SavePlaylistAsCommand}">
 					<iconPacks:PackIconLucide Kind="SaveAll" Padding="2"></iconPacks:PackIconLucide>
 				</Button>
 			</StackPanel>
