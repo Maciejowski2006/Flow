@@ -7,6 +7,7 @@ using CommunityToolkit.Mvvm.Messaging;
 using Flow.Player.Messages;
 using Flow.Player.Services;
 using Flow.Player.Services.PlaybackSubsystem;
+using Flow.Player.Services.Tools;
 using Flow.Player.Views;
 using Microsoft.Extensions.DependencyInjection;
 
@@ -102,5 +103,18 @@ public partial class MainWindowViewModel : ViewModelBase
 	{
 		ShowPlaylistView = !ShowPlaylistView;
 		WeakReferenceMessenger.Default.Send(new PlaylistViewChangedMessage(ShowPlaylistView));
+	}
+	[RelayCommand]
+	private async Task EmbedCoverArt()
+	{
+		IStorageFile? track = await App.Services.GetRequiredService<IFilePickerService>().OpenFileAsync("Select track to embed cover art into", FilePickerService.AudioAll);
+		if (track is null)
+			return;
+		
+		IStorageFile? coverArt = await App.Services.GetRequiredService<IFilePickerService>().OpenFileAsync("Open image", FilePickerFileTypes.ImageAll);
+		if (coverArt is null)
+			return;
+
+		MetadataEditor.EmbedCoverArt(track.Path.LocalPath, coverArt.Path.LocalPath);
 	}
 }

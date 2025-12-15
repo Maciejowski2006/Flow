@@ -55,6 +55,9 @@
 				<MenuItem Header="_View">
 					<MenuItem Header="_Playlist view" InputGesture="Ctrl+P" Command="{Binding TogglePlaylistViewCommand}" />
 				</MenuItem>
+				<MenuItem Header="_Tools">
+					<MenuItem Header="_Embed cover art" Command="{Binding EmbedCoverArtCommand}" />
+				</MenuItem>
 			</Menu>
 			<local:PlayerView Grid.Row="1" />
 			
