@@ -6,6 +6,7 @@ namespace Flow.Player;
 
 public interface IFilePickerService
 {
-	public Task<IStorageFile?> OpenFileAsync();
-	public Task<IReadOnlyList<IStorageFile>> OpenFilesAsync();
+	public Task<IStorageFile?> OpenFileAsync(string title, params IReadOnlyList<FilePickerFileType> fileType);
+	public Task<IReadOnlyList<IStorageFile>> OpenFilesAsync(string title, params IReadOnlyList<FilePickerFileType> fileType);
+	public Task<IStorageFile?> SaveFileAsync(string title, params IReadOnlyList<FilePickerFileType> fileType);
 }

@@ -1,11 +1,12 @@
-﻿using System.Threading.Tasks;
-using Avalonia.Controls;
+﻿using System;
+using System.Threading.Tasks;
 using Avalonia.Platform.Storage;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using CommunityToolkit.Mvvm.Messaging;
 using Flow.Player.Messages;
 using Flow.Player.Services;
+using Flow.Player.Services.PlaybackSubsystem;
 using Flow.Player.Views;
 using Microsoft.Extensions.DependencyInjection;
 
@@ -16,6 +17,7 @@ namespace Flow.Player.ViewModels;
 public partial class MainWindowViewModel : ViewModelBase
 {
 	private readonly PlayerViewModel _pvm = App.AppServices.GetRequiredService<PlayerViewModel>();
+	private readonly IPlaybackSubsystem _playbackSubsystem = App.AppServices.GetRequiredService<IPlaybackSubsystem>();
 	[ObservableProperty] private bool _showPlaylistView;
 
 	public MainWindowViewModel()
@@ -68,11 +70,11 @@ public partial class MainWindowViewModel : ViewModelBase
 	[RelayCommand]
 	private async Task OpenFile()
 	{
-		IStorageFile? file = await App.Services.GetRequiredService<IFilePickerService>().OpenFileAsync();
+		IStorageFile? file = await App.Services.GetRequiredService<IFilePickerService>().OpenFileAsync("Open song", FilePickerService.AudioAll);
 		if (file is null)
 			return;
 
-		await _pvm.LoadTrack(file.Path.LocalPath);
+		await _playbackSubsystem.LoadTrackAsync(file.Path.LocalPath);
 	}
 	[RelayCommand]
 	private void OpenSettings()

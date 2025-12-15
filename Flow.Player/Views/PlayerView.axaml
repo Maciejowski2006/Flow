@@ -73,7 +73,7 @@
 							<iconPacks:PackIconLucide IsVisible="{Binding !IsPlaying}" Kind="Pause" HorizontalAlignment="Center" VerticalAlignment="Center" Padding="2" />
 						</Panel>
 					</ToggleButton>
-					<Button>
+					<Button Command="{Binding PlayNextCommand}">
 						<iconPacks:PackIconLucide Kind="ArrowRightToLine" HorizontalAlignment="Center" VerticalAlignment="Center" Padding="2" />
 					</Button>
 				</StackPanel>

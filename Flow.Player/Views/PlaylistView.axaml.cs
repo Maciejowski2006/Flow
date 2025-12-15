@@ -1,12 +1,4 @@
-﻿using System;
-using System.Linq;
-using Avalonia;
-using Avalonia.Controls;
-using Avalonia.Input;
-using Avalonia.Interactivity;
-using Avalonia.Markup.Xaml;
-using CommunityToolkit.Mvvm.Messaging;
-using Flow.Player.Messages;
+﻿using Avalonia.Controls;
 using Flow.Player.ViewModels;
 using Microsoft.Extensions.DependencyInjection;
 
@@ -18,12 +10,5 @@ public partial class PlaylistView : UserControl
 	{
 		InitializeComponent();
 		DataContext = App.AppServices.GetRequiredService<PlaylistViewModel>();
-	}
-
-	protected override void OnLoaded(RoutedEventArgs e)
-	{
-		base.OnLoaded(e);
-		if (DataContext is PlaylistViewModel vm)
-			vm.Setup();
 	}
 }
