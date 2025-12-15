@@ -68,7 +68,7 @@ public partial class MainWindowViewModel : ViewModelBase
 	[RelayCommand]
 	private async Task OpenFile()
 	{
-		IStorageFile? file = await App.Services.GetRequiredService<IFilePickerService>().OpenFileAsync();
+		IStorageFile? file = await App.Services.GetRequiredService<IFilePickerService>().OpenFileAsync("Open song", FilePickerService.AudioAll);
 		if (file is null)
 			return;
 
