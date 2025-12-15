@@ -8,9 +8,11 @@ The music playing is [ValueFactory @ Furality Umbra](https://youtu.be/YHAv69l-8T
 ### Features
 - [x] File playback (.aac, .flac, .mp3, .ogg, .opus, .oga, .wav, .wma)
 - [x] Renders cover art (embedded file, image file with the same name)
+- [x] Playlist support
 - [x] Independent audio output device
 - [] SMTC Support
 - [] MPRIS (DBus media player controls)
+- [] Embedding cover art
 
 ### License
 Flow is MIT licensed.
