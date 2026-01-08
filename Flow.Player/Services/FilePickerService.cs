@@ -41,7 +41,7 @@ public class FilePickerService(Window target) : IFilePickerService
 
 	public static FilePickerFileType AudioAll { get; } = new("All audio files")
 	{
-		Patterns = ["*.mp3", "*.flac", "*.aac", "*.wav", "*.ogg", "*.opus", "*.au"],
+		Patterns = ["*.mp3", "*.flac", "*.aac", "*.wav", "*.ogg", "*.opus", "*.au", "*.m4a"],
 		AppleUniformTypeIdentifiers = ["public.audio"],
 		MimeTypes = ["audio/*"]
 	};
