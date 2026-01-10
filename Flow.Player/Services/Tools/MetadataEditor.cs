@@ -1,3 +1,4 @@
+using System;
 using TagLib;
 
 namespace Flow.Player.Services.Tools;
@@ -14,6 +15,9 @@ public static class MetadataEditor
 		metadata.Tag.Pictures =
 		[
 			new Picture(coverArt)
+			{
+				Type = PictureType.FrontCover
+			}
 		];
 		metadata.Save();
 	}
