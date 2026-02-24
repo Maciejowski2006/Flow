@@ -2,17 +2,18 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Reflection.Metadata.Ecma335;
 using System.Threading.Tasks;
+using FFMpegCore;
+using FFMpegCore.Enums;
 using Flow.Player.Extensions;
-using Serilog.Events;
 using SoundFlow.Abstracts.Devices;
 using SoundFlow.Backends.MiniAudio;
-using SoundFlow.Codecs.FFMpeg;
 using SoundFlow.Components;
+using SoundFlow.Enums;
 using SoundFlow.Interfaces;
 using SoundFlow.Providers;
 using SoundFlow.Structs;
-using SoundFlow.Utils;
 using Log = Serilog.Log;
 
 namespace Flow.Player.Services.AudioEngineService;
@@ -39,48 +40,44 @@ public sealed class SoundFlowAudioEngineService : IAudioEngineService, IDisposab
 	public List<AudioOutputDevice> AudioOutputDevices { get; }
 	public AudioOutputDevice CurrentOutputDevice { get; private set; }
 
+	private static readonly string[] NativeCodecs = [".aac", ".aiff", ".flac", ".m4a", ".mp3", ".ogg", ".opus", ".wav"];
+
 	public SoundFlowAudioEngineService()
 	{
 		Log.Information("Initializing audio engine");
 		_engine = new();
-		_engine.RegisterCodecFactory(new FFmpegCodecFactory());
 		AudioOutputDevices = _engine.PlaybackDevices.Select(x => new AudioOutputDevice(x.Name, x.Id)).ToList();
 		Log.Information("Audio output devices found: {Devices}", AudioOutputDevices.ToPrintableString(x => x.Name));
 		_selectedDevice = _engine.PlaybackDevices.FirstOrDefault(x => x.IsDefault);
 		CurrentOutputDevice = new(_selectedDevice.Name, _selectedDevice.Id);
-
-		SoundFlow.Utils.Log.OnLog += entry =>
-		{
-			LogEventLevel logLevel = entry.Level switch
-			{
-				LogLevel.Debug => LogEventLevel.Debug,
-				LogLevel.Info => LogEventLevel.Information,
-				LogLevel.Warning => LogEventLevel.Warning,
-				LogLevel.Error => LogEventLevel.Error,
-				_ => LogEventLevel.Fatal
-			};
-			Log.Write(logLevel, "{Message}", entry.Message);
-		};
 	}
 
-	public Task LoadFile(string filePath)
+	public async Task LoadFile(string filePath)
 	{
 		// Dispose if there was a track playing before
 		_soundPlayer?.Stop();
 		_soundPlayer?.Dispose();
 
 		FileInfo fileInfo = new(filePath);
+		if (!NativeCodecs.Contains(fileInfo.Extension))
+		{
+			Log.Information("Reencoding file: {filePath}", filePath);
+			filePath = ReencodeAudio(fileInfo);
+		}
 
-		if (NativeCodecs.Contains(fileInfo.Extension))
-			LoadNative(filePath);
-		else
-			LoadReencoder(filePath);
+		IMediaAnalysis mediaInfo = await FFProbe.AnalyseAsync(filePath);
+		if (mediaInfo.PrimaryAudioStream is not { } audioStream)
+			return;
+		
+		AudioFormat format = new()
+		{
+			Channels = audioStream.Channels,
+			SampleRate = audioStream.SampleRateHz,
+			Format = SampleFormat.S32
+		};
 
-		_playbackDevice.MasterMixer.AddComponent(_soundPlayer);
-		_playbackDevice.Start();
-		_soundPlayer.Play();
-		_soundPlayer.PlaybackEnded += (_, _) => PlaybackEnded?.Invoke(this, EventArgs.Empty);
-		return Task.CompletedTask;
+		LoadNativeCodec(filePath, format);
+		
 	}
 	public void Play() { _soundPlayer?.Play(); }
 	public void Pause() { _soundPlayer?.Pause(); }
@@ -100,6 +97,34 @@ public sealed class SoundFlowAudioEngineService : IAudioEngineService, IDisposab
 			CurrentOutputDevice = new(_playbackDevice.Info.Value.Name, _playbackDevice.Info.Value.Id);
 	}
 	public event EventHandler? PlaybackEnded;
+
+	private void LoadNativeCodec(string filePath, AudioFormat format)
+	{
+		_playbackDevice = _engine.InitializePlaybackDevice(_selectedDevice, format);
+		_dataProvider = new StreamDataProvider(_engine, format, File.OpenRead(filePath));
+		_soundPlayer = new(_engine, format, _dataProvider);
+
+		_playbackDevice.MasterMixer.AddComponent(_soundPlayer);
+		_playbackDevice.Start();
+		_soundPlayer.Play();
+
+		_soundPlayer.PlaybackEnded += (_, _) => PlaybackEnded?.Invoke(this, EventArgs.Empty);
+	}
+
+	private string ReencodeAudio(FileInfo fileInfo)
+	{
+		DirectoryInfo tempDir = Directory.CreateTempSubdirectory();
+		string oldFile = Path.GetFileNameWithoutExtension(fileInfo.Name);
+		string newFile = Path.Combine(tempDir.FullName, $"{oldFile}.wav");
+		Log.Information(newFile);
+		FFMpegArguments.FromFileInput(fileInfo)
+			.OutputToFile(newFile, true, options => options
+				.WithAudioCodec("pcm_s16le")
+			)
+			.ProcessSynchronously();
+		return newFile;
+	}
+
 	public void Dispose()
 	{
 		_engine.Dispose();
@@ -108,43 +133,4 @@ public sealed class SoundFlowAudioEngineService : IAudioEngineService, IDisposab
 		_dataProvider?.Dispose();
 		GC.SuppressFinalize(this);
 	}
-	
-	private void LoadNative(string filePath)
-	{
-		Log.Information("Loading native codec");
-		AudioFormat format = AudioFormat.DvdHq;
-		
-		_playbackDevice = _engine.InitializePlaybackDevice(_selectedDevice, format);
-		_dataProvider = new StreamDataProvider(_engine, format, File.OpenRead(filePath));
-		_soundPlayer = new(_engine, format, _dataProvider);
-	}
-	private void LoadReencoder(string filePath)
-	{
-		Log.Information("Reecoding track");
-		// Decode
-		try
-		{
-			using FileStream fs = new(filePath, FileMode.Open, FileAccess.Read);
-			using ISoundDecoder decoder = _engine.CreateDecoder(fs, out AudioFormat format);
-
-			float[] rawAudio = new float[decoder.Length];
-			decoder.Decode(rawAudio);
-
-			using MemoryStream ms = new(rawAudio.Length * sizeof(float));
-			using ISoundEncoder encoder = _engine.CreateEncoder(ms, "wav", format);
-			encoder.Encode(rawAudio);
-			
-			_playbackDevice = _engine.InitializePlaybackDevice(_selectedDevice, format);
-			_dataProvider = new AssetDataProvider(_engine, ms);
-			_soundPlayer = new(_engine, format, _dataProvider);
-		}
-		catch (Exception e)
-		{
-			Log.Error("{Message}", e.Message);
-		}
-	}
-	
-	
-	
-	private static readonly string[] NativeCodecs = [".flac", ".mp3", ".wav"];
 }
