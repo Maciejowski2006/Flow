@@ -27,18 +27,18 @@
 		<DockPanel Grid.Column="1" VerticalAlignment="Stretch">
 			<StackPanel DockPanel.Dock="Top" Spacing="2">
 				<local:ScrollingTextBlock
-					Text="{Binding PlayingTrack.Title, FallbackValue=No track selected}"
+					Text="{Binding PlayingTrack.Metadata.Title, FallbackValue=No track selected}"
 					FontSize="20"
 					ScrollSpeed="20"
 					GapWidth="50"
 					Foreground="White" />
 				<local:ScrollingTextBlock
-					Text="{Binding PlayingTrack.Artist, FallbackValue=No track selected}"
+					Text="{Binding PlayingTrack.Metadata.Artist, FallbackValue=No track selected}"
 					ScrollSpeed="20"
 					GapWidth="50"
 					Foreground="White" />
 				<local:ScrollingTextBlock
-					Text="{Binding PlayingTrack.Genre, FallbackValue=No track selected}"
+					Text="{Binding PlayingTrack.Metadata.Genre, FallbackValue=No track selected}"
 					ScrollSpeed="20"
 					GapWidth="50"
 					Foreground="White" />

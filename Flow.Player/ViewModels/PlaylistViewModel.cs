@@ -59,9 +59,9 @@ public partial class PlaylistViewModel : ViewModelBase
 					}),
 					width: new GridLength(64, GridUnitType.Pixel),
 					options: new() { CanUserResizeColumn = false, }),
-				new TextColumn<Track, string>("Title", x => x.Title),
-				new TextColumn<Track, string>("Artist", x => x.Artist),
-				new TextColumn<Track, string>("Album", x => x.Album),
+				new TextColumn<Track, string>("Title", x => x.Metadata.Title),
+				new TextColumn<Track, string>("Artist", x => x.Metadata.Artist),
+				new TextColumn<Track, string>("Album", x => x.Metadata.Album),
 			},
 		};
 		if (PlaylistSource.RowSelection != null)
