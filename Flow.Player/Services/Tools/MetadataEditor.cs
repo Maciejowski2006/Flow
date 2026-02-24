@@ -1,4 +1,5 @@
 using System;
+using Serilog;
 using TagLib;
 
 namespace Flow.Player.Services.Tools;
@@ -7,6 +8,7 @@ public static class MetadataEditor
 {
 	public static void EmbedCoverArt(string trackPath, string imagePath)
 	{
+		Log.Information("Embedding cover art for {trackPath} with {imagePath}", trackPath, imagePath);
 		File? metadata = File.Create(trackPath);
 		if (metadata is null)
 			return;

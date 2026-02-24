@@ -3,6 +3,7 @@ using System.Collections.ObjectModel;
 using System.Threading.Tasks;
 using Flow.Player.Models;
 using Flow.Player.Services.AudioEngineService;
+using Serilog;
 
 namespace Flow.Player.Services.PlaybackSubsystem;
 
@@ -35,6 +36,7 @@ public sealed class LocalPlaybackSubsystem : IPlaybackSubsystem
 	
 	public async Task LoadTrackAsync(string path)
 	{
+		Log.Information("Loading track: {Path}", path);
 		await _audioEngine.LoadFile(path);
 		CurrentTrack = new(path);
 		PlaybackMode = PlaybackMode.Single;
@@ -42,6 +44,7 @@ public sealed class LocalPlaybackSubsystem : IPlaybackSubsystem
 
 	public async Task PlayTrackFromPlaylistAsync(Track track)
 	{
+		Log.Information("Loading track in playlist: {Path}", track.FilePath);
 		await _audioEngine.LoadFile(track.FilePath);
 		CurrentTrack = track;
 		PlaybackMode = PlaybackMode.Playlist;

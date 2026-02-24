@@ -3,12 +3,12 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
+using Flow.Player.Extensions;
 using Serilog.Events;
 using SoundFlow.Abstracts.Devices;
 using SoundFlow.Backends.MiniAudio;
 using SoundFlow.Codecs.FFMpeg;
 using SoundFlow.Components;
-using SoundFlow.Enums;
 using SoundFlow.Interfaces;
 using SoundFlow.Providers;
 using SoundFlow.Structs;
@@ -41,10 +41,11 @@ public sealed class SoundFlowAudioEngineService : IAudioEngineService, IDisposab
 
 	public SoundFlowAudioEngineService()
 	{
-
+		Log.Information("Initializing audio engine");
 		_engine = new();
 		_engine.RegisterCodecFactory(new FFmpegCodecFactory());
 		AudioOutputDevices = _engine.PlaybackDevices.Select(x => new AudioOutputDevice(x.Name, x.Id)).ToList();
+		Log.Information("Audio output devices found: {Devices}", AudioOutputDevices.ToPrintableString(x => x.Name));
 		_selectedDevice = _engine.PlaybackDevices.FirstOrDefault(x => x.IsDefault);
 		CurrentOutputDevice = new(_selectedDevice.Name, _selectedDevice.Id);
 
@@ -93,6 +94,7 @@ public sealed class SoundFlowAudioEngineService : IAudioEngineService, IDisposab
 	public void SetOutputDevice(nint id)
 	{
 		DeviceInfo newDevice = _engine.PlaybackDevices.FirstOrDefault(x => x.Id == id);
+		Log.Information("Settings new output device: {Device}", newDevice.Name);
 		_playbackDevice = _engine.SwitchDevice(_playbackDevice, newDevice);
 		if (_playbackDevice.Info.HasValue)
 			CurrentOutputDevice = new(_playbackDevice.Info.Value.Name, _playbackDevice.Info.Value.Id);

@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text.Json;
 using System.Threading.Tasks;
 using Flow.Player.Models;
+using Serilog;
 
 namespace Flow.Player.Services.PlaylistSerializer;
 
@@ -11,6 +12,7 @@ public class JsonPlaylistSerializer : IPlaylistSerializer
 {
 	public async Task<IReadOnlyList<Track>?> DeserializeAsync(string path)
 	{
+		Log.Information("Deserializing playlist from {path}", path);
 		Stream stream = File.OpenRead(path);
 		IReadOnlyList<string>? playlist = await JsonSerializer.DeserializeAsync<IReadOnlyList<string>>(stream);
 		stream.Close();
@@ -21,6 +23,7 @@ public class JsonPlaylistSerializer : IPlaylistSerializer
 	}
 	public async Task SerializeAsync(IReadOnlyList<Track> playlist, string path)
 	{
+		Log.Information("Serializing playlist {path}", path);
 		Stream stream = File.Create(path);
 		IEnumerable<string> mappedPlaylist = playlist.Select(x => x.FilePath);
 		await JsonSerializer.SerializeAsync(stream, mappedPlaylist, new JsonSerializerOptions
