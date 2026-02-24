@@ -40,7 +40,7 @@ public sealed class SoundFlowAudioEngineService : IAudioEngineService, IDisposab
 	public List<AudioOutputDevice> AudioOutputDevices { get; }
 	public AudioOutputDevice CurrentOutputDevice { get; private set; }
 
-	private static readonly string[] NativeCodecs = [".aac", ".aiff", ".flac", ".m4a", ".mp3", ".ogg", ".wav"];
+	private static readonly string[] NativeCodecs = [".aac", ".aiff", ".flac", ".m4a", ".mp3", ".wav"];
 
 	public SoundFlowAudioEngineService()
 	{
