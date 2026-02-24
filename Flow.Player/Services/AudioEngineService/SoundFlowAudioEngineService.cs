@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
-using Serilog;
+using Serilog.Events;
 using SoundFlow.Abstracts.Devices;
 using SoundFlow.Backends.MiniAudio;
 using SoundFlow.Codecs.FFMpeg;
@@ -12,6 +12,8 @@ using SoundFlow.Enums;
 using SoundFlow.Interfaces;
 using SoundFlow.Providers;
 using SoundFlow.Structs;
+using SoundFlow.Utils;
+using Log = Serilog.Log;
 
 namespace Flow.Player.Services.AudioEngineService;
 
@@ -45,6 +47,19 @@ public sealed class SoundFlowAudioEngineService : IAudioEngineService, IDisposab
 		AudioOutputDevices = _engine.PlaybackDevices.Select(x => new AudioOutputDevice(x.Name, x.Id)).ToList();
 		_selectedDevice = _engine.PlaybackDevices.FirstOrDefault(x => x.IsDefault);
 		CurrentOutputDevice = new(_selectedDevice.Name, _selectedDevice.Id);
+
+		SoundFlow.Utils.Log.OnLog += entry =>
+		{
+			LogEventLevel logLevel = entry.Level switch
+			{
+				LogLevel.Debug => LogEventLevel.Debug,
+				LogLevel.Info => LogEventLevel.Information,
+				LogLevel.Warning => LogEventLevel.Warning,
+				LogLevel.Error => LogEventLevel.Error,
+				_ => LogEventLevel.Fatal
+			};
+			Log.Write(logLevel, "{Message}", entry.Message);
+		};
 	}
 
 	public Task LoadFile(string filePath)
@@ -94,6 +109,7 @@ public sealed class SoundFlowAudioEngineService : IAudioEngineService, IDisposab
 	
 	private void LoadNative(string filePath)
 	{
+		Log.Information("Loading native codec");
 		AudioFormat format = AudioFormat.DvdHq;
 		
 		_playbackDevice = _engine.InitializePlaybackDevice(_selectedDevice, format);
@@ -102,6 +118,7 @@ public sealed class SoundFlowAudioEngineService : IAudioEngineService, IDisposab
 	}
 	private void LoadReencoder(string filePath)
 	{
+		Log.Information("Reecoding track");
 		// Decode
 		try
 		{
