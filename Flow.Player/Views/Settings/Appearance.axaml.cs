@@ -1,10 +1,13 @@
-﻿using Avalonia;
-using Avalonia.Controls;
-using Avalonia.Markup.Xaml;
+﻿using Avalonia.Controls;
+using Flow.Player.ViewModels.Settings;
 
 namespace Flow.Player.Views.Settings;
 
 public partial class Appearance : UserControl
 {
-	public Appearance() { InitializeComponent(); }
+	public Appearance()
+	{
+		InitializeComponent();
+		DataContext = new AppearanceViewModel();
+	}
 }
