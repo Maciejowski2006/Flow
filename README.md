@@ -14,5 +14,9 @@ The music playing is [ValueFactory @ Furality Umbra](https://youtu.be/YHAv69l-8T
 - [] MPRIS (DBus media player controls)
 - [x] Embedding cover art
 
+### Buliding
+> [!WARNING]
+> Currently IconPacks.Avalonia.Lucide has to be built and referenced manually since there is no public release that supports Avalonia 12.0.
+
 ### License
 Flow is MIT licensed.
